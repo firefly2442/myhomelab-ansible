@@ -1,0 +1,26 @@
+ubuntu:
+  children:
+    arm64:
+      hosts:
+        pifour:
+          ansible_host: 192.168.1.226
+        pithree:
+          ansible_host: 192.168.1.224
+    amd64:
+      hosts:
+        asusbackup:
+          ansible_host: 192.168.1.140
+        blueantec:
+          ansible_host: 192.168.1.113
+        dellxps:
+          ansible_host: 192.168.1.171
+        alienware:
+          ansible_host: 192.168.1.105
+        asuslaptop:
+          ansible_host: 192.168.1.124
+
+router:
+  hosts:
+    openwrt:
+      ansible_host: 192.168.1.1
+      ansible_user: root

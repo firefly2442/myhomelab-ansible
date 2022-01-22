@@ -1,0 +1,11 @@
+---
+- hosts: ubuntu
+  tasks:
+  - name: apt update and look for package upgrades
+    become: true
+    # https://docs.ansible.com/ansible/2.9/modules/apt_module.html#apt-module
+    apt:
+      upgrade: yes
+      update_cache: yes
+      install_recommends: yes
+      

@@ -1,0 +1,9 @@
+---
+- hosts: ubuntu
+  vars:
+    # 20.04
+    ubuntu_codename: focal
+  tasks:
+  - name: set apt proxy to the local cache mirror
+    become: true
+    
