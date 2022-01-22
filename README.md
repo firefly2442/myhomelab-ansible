@@ -23,6 +23,12 @@ ansible ubuntu -m ping -i inventory.yml -k
 
 ## Running Playbooks
 
+Initial configurations common across all systems
+
+```shell
+ansible-playbook playbooks/initial_setup_configuration.yml -f 10 -i inventory.yml -K -k
+```
+
 Install the common packages used across all systems
 
 ```shell
@@ -33,6 +39,12 @@ Update APT metadata and look for package upgrades
 
 ```shell
 ansible-playbook playbooks/upgrade_latest_packages.yml -f 10 -i inventory.yml -K -k
+```
+
+Install Steam
+
+```shell
+ansible-playbook playbooks/install_steam_playbook.yml -f 10 -i inventory.yml -K -k
 ```
 
 ## Testing

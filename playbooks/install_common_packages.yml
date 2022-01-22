@@ -1,12 +1,14 @@
 ---
 - hosts: ubuntu
   vars:
-    # 20.04
-    ubuntu_codename: focal
+    ubuntu_codename: focal # 20.04 LTS
   tasks:
   - name: Get DEB architecture
     ansible.builtin.shell: dpkg --print-architecture
     register: deb_architecture # arm64 or amd64
+  - name: DEB architecture
+    debug:
+      msg: "deb_architecture['stdout']: {{ deb_architecture['stdout'] }}"
   - name: install common packages
     become: true
     # https://docs.ansible.com/ansible/2.9/modules/apt_module.html#apt-module
@@ -37,6 +39,7 @@
         - git-gui
       state: latest
       update_cache: yes
+      cache_valid_time: 3600 # only update cache if it hasn't been updated in the last hour
       install_recommends: yes
   - name: add GPG key for docker
     become: true
@@ -46,7 +49,7 @@
   - name: add docker repository to apt
     become: true
     apt_repository:
-      repo: deb [arch={{ deb_architecture }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ubuntu_codename }} stable
+      repo: deb [arch={{ deb_architecture['stdout'] }}] https://download.docker.com/linux/ubuntu {{ ubuntu_codename }} stable
       state: present
   - name: install docker via apt
     become: true
@@ -78,7 +81,7 @@
       groups: docker
       append: yes # this ensures it will add-to and not replace all groups
 
-  # install docker-compose
+  # install latest docker-compose
   # https://docs.docker.com/compose/cli-command/#install-on-linux
   - name: create directory for docker-compose
     ansible.builtin.file:
@@ -95,3 +98,28 @@
       mode: '0775'
   
   # install rclone
+  - name: download latest rclone
+    become: true
+    ansible.builtin.get_url:
+      # deb_architecture is amd64 or arm64
+      url: https://downloads.rclone.org/rclone-current-linux-{{ deb_architecture['stdout'] }}.zip
+      dest: /tmp
+  - name: extract rclone zip
+    become: true
+    ansible.builtin.unarchive:
+      src: /tmp/rclone-current-linux-{{ deb_architecture['stdout'] }}.zip
+      dest: /usr/bin/
+      extra_opts: -j # skip the first folder, dump the contents
+      remote_src: yes
+
+  # install visual studio code
+  - name: install visual studio code for amd64
+    become: true
+    apt:
+      deb: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
+    when: deb_architecture['stdout'] == "amd64"
+  - name: install visual studio code for arm64
+    become: true
+    apt:
+      deb: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-arm64
+    when: deb_architecture['stdout'] == "arm64"

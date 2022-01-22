@@ -1,0 +1,32 @@
+---
+- hosts:
+  - alienware
+  - asuslaptop
+  vars:
+    ubuntu_codename: focal # 20.04 LTS
+  tasks:
+  # https://repo.steampowered.com/steam/
+  - name: add GPG key for steam
+    become: true
+    apt_key:
+      url: https://repo.steampowered.com/steam/archive/stable/steam.gpg
+      state: present
+  - name: add steam repository to apt
+    become: true
+    apt_repository:
+      repo: deb [arch=amd64,i386] http://repo.steampowered.com/steam/ stable steam
+      state: present
+  - name: add i386 architecture
+    become: true
+    ansible.builtin.shell: dpkg --add-architecture i386
+  - name: install steam
+    become: true
+    apt:
+      name:
+        - libgl1-mesa-dri:amd64
+        - libgl1-mesa-dri:i386
+        - libgl1-mesa-glx:amd64
+        - libgl1-mesa-glx:i386
+        - steam-launcher
+      state: latest
+      update_cache: yes
