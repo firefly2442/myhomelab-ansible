@@ -59,6 +59,7 @@
   - name: download RStudio IDE
     get_url:
       # they don't seem to have a "latest" URL or something we can grab so this just dumps a download in the home folder for now
+      # https://www.rstudio.com/products/rstudio/download/#download
       url: https://download1.rstudio.org/desktop/bionic/amd64/rstudio-2021.09.2-382-amd64.deb
       dest: ~/
   - name: RStudio IDE message

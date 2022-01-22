@@ -67,18 +67,6 @@ Validate the `inventory.yml` file
 ansible-inventory -i inventory.yml --list
 ```
 
-Unit Tests:
-
-```shell
-ansible-test units
-```
-
-Integration tests:
-
-```shell
-ansible-test integration
-```
-
 ## References
 
 * [Quick Start Video](https://www.ansible.com/resources/videos/quick-start-video)
