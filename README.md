@@ -11,7 +11,7 @@ Install Ansible
 ## Setup
 
 Make sure from the control node, you've already SSH'ed into each node
-and that the connection has been added to the `known_hosts` file.
+and that the connection has been added to the `~/.ssh/known_hosts` file.
 
 ## Simple Ad-Hoc Tests
 
@@ -70,3 +70,4 @@ ansible-inventory -i inventory.yml --list
 ## References
 
 * [Quick Start Video](https://www.ansible.com/resources/videos/quick-start-video)
+* [Ansible Documentation](https://docs.ansible.com/)
