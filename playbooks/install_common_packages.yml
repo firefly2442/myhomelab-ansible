@@ -33,6 +33,7 @@
         - build-essential
         - gparted
         - smartmontools
+        - gnome-disk-utility
         - vlc
         - gitk
         - git-core

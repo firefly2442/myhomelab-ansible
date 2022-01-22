@@ -2,8 +2,6 @@
 - hosts:
   - alienware
   - asuslaptop
-  vars:
-    ubuntu_codename: focal # 20.04 LTS
   tasks:
   # https://repo.steampowered.com/steam/
   - name: add GPG key for steam

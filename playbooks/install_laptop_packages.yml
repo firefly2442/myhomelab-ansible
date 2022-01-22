@@ -1,11 +1,66 @@
+---
+- hosts: asuslaptop
+  vars:
+    ubuntu_codename: focal # 20.04 LTS
+  tasks:
+  - name: install some popular packages via apt
+    become: true
+    apt:
+      name:
+        - gimp
+        - inkscape
+        - musescore3
+        - geany
+        - meld
+      state: latest
+      install_recommends: yes
+      update_cache: yes
 
+  # https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-ubuntu
+  - name: add ansible from PPA
+    become: true
+    ansible.builtin.apt_repository:
+      repo: ppa:ansible/ansible
+  - name: install ansible via apt
+    become: true
+    apt:
+      name:
+        - ansible
+      state: latest
+      install_recommends: yes
+      update_cache: yes
 
+  # R programming language
+  # https://cran.r-project.org/bin/linux/ubuntu
+  - name: add GPG key for R
+    become: true
+    apt_key:
+      url: https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc
+      state: present
+  - name: add R repository to apt
+    become: true
+    apt_repository:
+      repo: deb https://cloud.r-project.org/bin/linux/ubuntu {{ ubuntu_codename }}-cran40/
+      state: present
+  - name: install R via apt
+    become: true
+    apt:
+      name:
+        - r-base
+      state: latest
+      update_cache: yes
+      install_recommends: yes
 
-
-# chrome
-
-# R programming language
-
-# RStudio
-
-# gimp, inkscape
+  # RStudio IDE
+  - name: add RStudio GPG key
+    become: true
+    # https://www.rstudio.com/code-signing/
+    ansible.builtin.shell: gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F
+  - name: download RStudio IDE
+    get_url:
+      # they don't seem to have a "latest" URL or something we can grab so this just dumps a download in the home folder for now
+      url: https://download1.rstudio.org/desktop/bionic/amd64/rstudio-2021.09.2-382-amd64.deb
+      dest: ~/
+  - name: RStudio IDE message
+    debug:
+      msg: "RStudio IDE .deb is in the home folder ready to install"

@@ -1,0 +1,10 @@
+---
+- hosts:
+  - asuslaptop
+  - alienware
+  - blueantec
+  tasks:
+  - name: install Chrome from deb
+    become: true
+    apt:
+      deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
