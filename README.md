@@ -26,13 +26,13 @@ ansible ubuntu -m ping -i inventory.yml -k
 Install the common packages used across all systems
 
 ```shell
-ansible-playbook playbooks/install_common_packages.yml -f 10 -i inventory.yml -K
+ansible-playbook playbooks/install_common_packages.yml -f 10 -i inventory.yml -K -k
 ```
 
 Update APT metadata and look for package upgrades
 
 ```shell
-ansible-playbook playbooks/upgrade_latest_packages.yml -f 10 -i inventory.yml -K
+ansible-playbook playbooks/upgrade_latest_packages.yml -f 10 -i inventory.yml -K -k
 ```
 
 ## Testing

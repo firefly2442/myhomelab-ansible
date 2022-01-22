@@ -28,6 +28,13 @@
         - zip
         - unzip
         - zfsutils-linux
+        - build-essential
+        - gparted
+        - smartmontools
+        - vlc
+        - gitk
+        - git-core
+        - git-gui
       state: latest
       update_cache: yes
       install_recommends: yes
