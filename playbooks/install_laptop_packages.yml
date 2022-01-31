@@ -65,3 +65,9 @@
   - name: RStudio IDE message
     debug:
       msg: "RStudio IDE .deb is in the home folder ready to install"
+
+  # Discord
+  - name: download and install Discord
+    become: true
+    apt:
+      deb: https://discord.com/api/download?platform=linux&format=deb
