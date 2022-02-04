@@ -12,8 +12,6 @@ ubuntu:
           ansible_host: 192.168.1.140
         blueantec:
           ansible_host: 192.168.1.113
-        dellxps:
-          ansible_host: 192.168.1.171
         alienware:
           ansible_host: 192.168.1.105
         asuslaptop:
