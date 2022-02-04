@@ -16,6 +16,7 @@
       name:
         - nano
         - openssh-server
+        - rsync
         - aptitude
         - apt-transport-https
         - ca-certificates
