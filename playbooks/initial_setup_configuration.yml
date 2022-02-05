@@ -9,4 +9,16 @@
         Acquire::HTTP::Proxy "http://192.168.1.226:3142";
         Acquire::HTTPS::Proxy "false";
 
-    
+  - name: setup Systemd script for automating rclone backups
+    become: true
+    ansible.builtin.copy:
+      src: "{{ playbook_dir }}/../systemd/rclone-backup.service"
+      dest: /etc/systemd/system/rclone-backup.service
+      mode: 644
+  - name: start Systemd rclone backup service
+    become: true
+    ansible.builtin.systemd:
+      name: rclone-backup.service
+      state: started
+      daemon_reload: yes
+      enabled: yes
