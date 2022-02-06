@@ -34,6 +34,7 @@
         - build-essential
         - gparted
         - smartmontools
+        - fdisk
         - gnome-disk-utility
         - vlc
         - gitk
