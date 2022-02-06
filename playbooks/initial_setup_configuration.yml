@@ -15,10 +15,23 @@
       src: "{{ playbook_dir }}/../systemd/rclone-backup.service"
       dest: /etc/systemd/system/rclone-backup.service
       mode: 644
+  - name: setup Systemd timer for automating rclone backups
+    become: true
+    ansible.builtin.copy:
+      src: "{{ playbook_dir }}/../systemd/rclone-backup.timer"
+      dest: /etc/systemd/system/rclone-backup.timer
+      mode: 644
   - name: start Systemd rclone backup service
     become: true
     ansible.builtin.systemd:
       name: rclone-backup.service
+      state: started
+      daemon_reload: yes
+      enabled: yes
+  - name: start Systemd rclone backup timer
+    become: true
+    ansible.builtin.systemd:
+      name: rclone-backup.timer
       state: started
       daemon_reload: yes
       enabled: yes

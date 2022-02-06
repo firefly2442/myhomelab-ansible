@@ -1,16 +1,13 @@
 [Unit]
-Description=Rclone Backup
+Description=Rclone Backup Service
 After=network.target
+Wants=rclone-backup.timer
 
 [Service]
 Type=simple
 User=carlsonp
 WorkingDirectory=/home/carlsonp/rclone/
 ExecStart=/home/carlsonp/rclone/run-backup.sh
-
-[Timer]
-OnBootSec=5min
-OnCalendar=daily
 
 [Install]
 WantedBy=timers.target

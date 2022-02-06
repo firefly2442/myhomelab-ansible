@@ -1,0 +1,11 @@
+[Unit]
+Description=Rclone Backup on Timer
+After=network.target
+Requires=rclone-backup.service
+
+[Timer]
+OnBootSec=5min
+OnCalendar=daily
+
+[Install]
+WantedBy=timers.target
