@@ -1,6 +1,6 @@
 ---
 - hosts:
-  - asuslaptop
+  - system76laptop
   - alienware
   - blueantec
   tasks:

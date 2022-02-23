@@ -1,5 +1,5 @@
 ---
-- hosts: asuslaptop
+- hosts: system76laptop
   vars:
     ubuntu_codename: focal # 20.04 LTS
   tasks:

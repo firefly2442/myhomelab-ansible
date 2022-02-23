@@ -14,7 +14,7 @@ ubuntu:
           ansible_host: 192.168.1.113
         alienware:
           ansible_host: 192.168.1.105
-        asuslaptop:
+        system76laptop:
           ansible_host: 192.168.1.124
 
 router:
