@@ -1,0 +1,25 @@
+---
+- hosts: blueantec
+  vars:
+    ubuntu_codename: jammy # 22.04 LTS
+  tasks:
+  # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker
+  - name: add GPG key for nvidia-docker2
+    become: true
+    apt_key:
+      url: https://nvidia.github.io/libnvidia-container/gpgkey
+      state: present
+  - name: add Nvidia repository to apt
+    become: true
+    apt_repository:
+      # it says 18.04 in the URL but that's OK according to the docs
+      repo: deb https://nvidia.github.io/libnvidia-container/stable/ubuntu18.04/$(ARCH) /
+      state: present
+  - name: install Nvidia Docker integrations
+    become: true
+    apt:
+      name:
+        - nvidia-docker2
+      state: latest
+      install_recommends: yes
+      update_cache: yes

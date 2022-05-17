@@ -23,6 +23,8 @@ ansible ubuntu -m ping -i inventory.yml -k
 
 ## Running Playbooks
 
+### Computers and Laptops
+
 Initial configurations common across all systems
 
 ```shell
@@ -57,6 +59,12 @@ Install software specific to laptop
 
 ```shell
 ansible-playbook playbooks/install_laptop_packages.yml -i inventory.yml -K -k
+```
+
+Install software specific to BlueAntec for Nvidia Docker integration
+
+```shell
+ansible-playbook playbooks/install_blueantec_packages.yml -i inventory.yml -K -k
 ```
 
 ## Testing

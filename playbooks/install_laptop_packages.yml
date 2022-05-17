@@ -1,7 +1,7 @@
 ---
 - hosts: system76laptop
   vars:
-    ubuntu_codename: focal # 20.04 LTS
+    ubuntu_codename: jammy # 22.04 LTS
   tasks:
   - name: install some popular packages via apt
     become: true
