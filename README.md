@@ -67,6 +67,14 @@ Install software specific to BlueAntec for Nvidia Docker integration
 ansible-playbook playbooks/install_blueantec_packages.yml -i inventory.yml -K -k
 ```
 
+### Single Machine
+
+To run a playbook on a single machine add the `--limit` flag.  For example:
+
+```shell
+ansible-playbook playbooks/install_chrome_playbook.yml -i inventory.yml -K -k --limit system76laptop
+```
+
 ## Testing
 
 Validate the `inventory.yml` file
