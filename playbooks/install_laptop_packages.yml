@@ -71,3 +71,17 @@
     become: true
     apt:
       deb: https://discord.com/api/download?platform=linux&format=deb
+
+  # https://support.system76.com/articles/system76-driver/
+  - name: add System76 drivers PPA
+    become: true
+    ansible.builtin.apt_repository:
+      repo: ppa:system76-dev/stable
+  - name: install System76 drivers via apt
+    become: true
+    apt:
+      name:
+        - system76-driver
+      state: latest
+      install_recommends: yes
+      update_cache: yes
