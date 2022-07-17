@@ -75,6 +75,48 @@ To run a playbook on a single machine add the `--limit` flag.  For example:
 ansible-playbook playbooks/install_chrome_playbook.yml -i inventory.yml -K -k --limit system76laptop
 ```
 
+### Wireless Router via OpenWRT
+
+Manually install either a fresh copy of OpenWRT or install the upgrade firmware.  This
+may require a reboot of the cable modem in order to get the WAN connectivity
+to initialize again.
+
+Copy the public and private keys from Windows into WSL2
+
+```shell
+cp -r /mnt/c/Users/Patrick/.ssh/ ~/
+sudo chmod 700 ~/.ssh/
+sudo chmod 644 ~/.ssh/*.pub
+sudo chmod 600 ~/.ssh/id_rsa
+```
+
+Add the `id_rsa.pub` contents of the public key to the OpenWRT SSH-Keys page.
+
+You may need to add this to `~/.ssh/config` if it's using an old SSH algorithm.
+
+```contents
+Host 192.168.1.1
+  User root
+  HostkeyAlgorithms +ssh-rsa
+  PubkeyAcceptedAlgorithms +ssh-rsa
+```
+
+Ansible also needs Python3 so we need to manually install it on the router first.
+
+```shell
+opkg update
+opkg install python3
+```
+
+Edit and evaluate `./playbooks/secrets/wireless` as needed.  This has our wifi radio
+details as well as the password key.
+
+Run the playbook
+
+```shell
+ansible-playbook playbooks/setup_router_playbook.yml -i inventory.yml --private-key=~/.ssh/id_rsa
+```
+
 ## Testing
 
 Validate the `inventory.yml` file
@@ -82,6 +124,10 @@ Validate the `inventory.yml` file
 ```shell
 ansible-inventory -i inventory.yml --list
 ```
+
+## Debugging
+
+Use `-vvv` for more verbose logging from Ansible.
 
 ## References
 
