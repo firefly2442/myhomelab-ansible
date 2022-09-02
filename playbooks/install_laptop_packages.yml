@@ -12,6 +12,7 @@
         - musescore3
         - geany
         - meld
+        - wavemon
       state: latest
       install_recommends: yes
       update_cache: yes
