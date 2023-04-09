@@ -47,6 +47,7 @@
         - default-jdk
         - zfs-auto-snapshot
         - open-iscsi
+        - jq
       state: latest
       update_cache: yes
       cache_valid_time: 3600 # only update cache if it hasn't been updated in the last hour
