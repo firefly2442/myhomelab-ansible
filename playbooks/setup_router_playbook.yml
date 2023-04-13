@@ -50,12 +50,8 @@
           list src_ip '192.168.1.188'
           # hs105-4
           list src_ip '192.168.1.172'
-          # IP8M-2493EW-B
-          list src_ip '192.168.1.110'
           # IP4M-1051W
           list src_ip '192.168.1.111'
-          # IP8M-2493EW-A
-          list src_ip '192.168.1.112'
           option dest 'wan'
           option target 'REJECT'
           option src 'lan'
@@ -88,7 +84,7 @@
     loop:
       - { mac: 'C8:60:00:A1:C3:6B', name: 'BlueAntec', ip: '192.168.1.138' }
       - { mac: 'D4:5D:64:D4:F0:43', name: 'alienware', ip: '192.168.1.105' }
-      - { mac: 'D4:93:90:0B:E3:13', name: 'system76-pc', ip: '192.168.1.124' }
+      - { mac: '20:C1:9B:74:E3:9D', name: 'system76-pc', ip: '192.168.1.124' }
       - { mac: 'B8:27:EB:59:AF:25', name: 'raspberrypi3', ip: '192.168.1.224' }
       - { mac: 'C8:60:00:A1:D7:07', name: 'BlueAntec', ip: '192.168.1.113' }
       - { mac: '98:DA:C4:4A:37:5A', name: 'hs105-1', ip: '192.168.1.147' }
@@ -96,8 +92,6 @@
       - { mac: '98:DA:C4:4A:26:D6', name: 'hs105-3', ip: '192.168.1.188' }
       - { mac: '00:1A:92:D8:CB:2E', name: 'antec-backup', ip: '192.168.1.140' }
       - { mac: 'DC:A6:32:BD:63:F8', name: 'pifour', ip: '192.168.1.226' }
-      - { mac: '9C:8E:CD:2C:75:AC', name: 'IP8M-2493EW-A', ip: '192.168.1.112' }
-      - { mac: '9C:8E:CD:2C:74:CD', name: 'IP8M-2493EW-B', ip: '192.168.1.110' }
       - { mac: '84:D8:1B:F4:AF:8C', name: 'hs105-4', ip: '192.168.1.172' }
       - { mac: '9C:8E:CD:22:F0:06', name: 'IP4M-1051W', ip: '192.168.1.111' }
   - name: manual step for cleanup of original dhcp lan entry
