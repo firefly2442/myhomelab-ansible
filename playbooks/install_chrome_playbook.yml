@@ -3,6 +3,7 @@
   - system76laptop
   - alienware
   - blueantec
+  - minisforum
   tasks:
   - name: install Chrome from deb
     become: true

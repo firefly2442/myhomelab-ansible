@@ -82,6 +82,7 @@
           option dns '1'
           option ip {{ item.ip }}
     loop:
+      - { mac: '58:47:CA:70:92:C9', name: 'MinisForums', ip: '192.168.1.112' }
       - { mac: 'C8:60:00:A1:C3:6B', name: 'BlueAntec', ip: '192.168.1.138' }
       - { mac: 'D4:5D:64:D4:F0:43', name: 'alienware', ip: '192.168.1.105' }
       - { mac: '20:C1:9B:74:E3:9D', name: 'system76-pc', ip: '192.168.1.124' }
