@@ -1,0 +1,56 @@
+---
+- hosts:
+  - minisforum
+  - alienware
+  - blueantec
+  tasks:
+  - name: Install required packages (needed for longhorn)
+    become: true
+    apt:
+      name:
+        - open-iscsi
+        - jq
+      state: latest
+      install_recommends: yes
+      update_cache: no
+  - name: Install Helm binary
+    become: true
+    ansible.builtin.unarchive:
+      # https://github.com/helm/helm/releases
+      src: https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz
+      dest: /usr/local/bin
+      extra_opts: "--strip-components=1"
+      owner: root
+      group: root
+      mode: 0755
+      remote_src: true
+  - name: Download k3s script
+    ansible.builtin.get_url:
+      url: https://get.k3s.io
+      dest: /tmp/k3s.sh
+  - name: Install k3s on master
+    when: inventory_hostname in ['alienware']
+    become: true
+    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.24.12+k3s1 sh -s - server --cluster-init --tls-san {{ loadbalancer | quote }}
+  - name: Install k3s on other nodes
+    when: inventory_hostname not in ['alienware']
+    become: true
+    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.24.12+k3s1 sh -s - server --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }}
+  - name: Set load balancer IP in /etc/rancher/k3s/k3s.yaml
+    become: true
+    ansible.builtin.replace:
+      path: /etc/rancher/k3s/k3s.yaml
+      regexp: "server: https://127.0.0.1:6443"
+      replace: "server: https://{{ master }}:6443"
+  - name: Wait for cluster handshake and spinup
+    ansible.builtin.pause:
+      seconds: 10
+  - name: Get node status
+    ansible.builtin.command: kubectl get nodes
+    register: kubenodes
+  - name: Show kubectl get nodes result
+    ansible.builtin.debug: msg="{{ kubenodes.stdout }}"
+  - name: Add Longhorn Helm repo
+    ansible.builtin.command: helm repo add longhorn https://charts.longhorn.io
+  - name: Update Helm repos
+    ansible.builtin.command: helm repo update

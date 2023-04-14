@@ -67,6 +67,18 @@ Install software specific to BlueAntec for Nvidia Docker integration
 ansible-playbook playbooks/install_blueantec_packages.yml -i inventory.yml -K -k
 ```
 
+Install k3s Kubernetes cluster
+
+```shell
+ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --extra-vars "token=secret master=192.168.1.105 loadbalancer=192.168.1.226"
+```
+
+Teardown k3s Kubernetes cluster
+
+```shell
+ansible-playbook playbooks/teardown_k3s_kubernetes.yml -i inventory.yml -K -k
+```
+
 ### Single Machine
 
 To run a playbook on a single machine add the `--limit` flag.  For example:

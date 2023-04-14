@@ -1,0 +1,9 @@
+---
+- hosts:
+  - minisforum
+  - alienware
+  - blueantec
+  tasks:
+  - name: k3s Kubernetes uninstall
+    become: true
+    ansible.builtin.command: /usr/local/bin/k3s-uninstall.sh
