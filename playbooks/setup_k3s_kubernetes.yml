@@ -20,7 +20,17 @@
       # https://github.com/helm/helm/releases
       src: https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz
       dest: /usr/local/bin
-      extra_opts: "--strip-components=1"
+      extra_opts: "--strip-components=1" # skip first folder
+      owner: root
+      group: root
+      mode: 0755
+      remote_src: true
+  - name: Install cert-manager cmctl binary
+    become: true
+    ansible.builtin.unarchive:
+      # https://github.com/cert-manager/cert-manager/releases
+      src: https://github.com/cert-manager/cert-manager/releases/download/v1.11.1/cmctl-linux-amd64.tar.gz
+      dest: /usr/local/bin
       owner: root
       group: root
       mode: 0755
@@ -69,6 +79,7 @@
       - helm repo add metallb https://metallb.github.io/metallb
       - helm repo add milvus https://milvus-io.github.io/milvus-helm/
       - helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+      - helm repo add jetstack https://charts.jetstack.io
   - name: Update Helm repos
     ansible.builtin.command: helm repo update
   - name: Install metallb (load balancer)
