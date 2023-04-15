@@ -3,6 +3,7 @@
   - minisforum
   - alienware
   - blueantec
+  - system76laptop
   tasks:
   - name: k3s Kubernetes uninstall
     become: true

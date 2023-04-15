@@ -3,6 +3,7 @@
   - minisforum
   - alienware
   - blueantec
+  - system76laptop
   tasks:
   - name: Install required packages (needed for longhorn)
     become: true
@@ -31,26 +32,45 @@
   - name: Install k3s on master
     when: inventory_hostname in ['alienware']
     become: true
-    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.24.12+k3s1 sh -s - server --cluster-init --tls-san {{ loadbalancer | quote }}
+    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.24.12+k3s1 sh -s - server --cluster-init --tls-san {{ loadbalancer | quote }} --disable servicelb
   - name: Install k3s on other nodes
-    when: inventory_hostname not in ['alienware']
+    when: inventory_hostname in ['blueantec', 'minisforum']
     become: true
-    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.24.12+k3s1 sh -s - server --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }}
+    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.24.12+k3s1 sh -s - server --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }} --disable servicelb
+  - name: Install k3s on laptop with just control plane, this way no workloads get assigned
+    when: inventory_hostname in ['system76laptop']
+    become: true
+    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.24.12+k3s1 sh -s - server --node-taint CriticalAddonsOnly=true:NoExecute --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }} --disable servicelb
   - name: Set load balancer IP in /etc/rancher/k3s/k3s.yaml
     become: true
     ansible.builtin.replace:
       path: /etc/rancher/k3s/k3s.yaml
-      regexp: "server: https://127.0.0.1:6443"
-      replace: "server: https://{{ master }}:6443"
+      regexp: "server: https://.*:6443"
+      replace: "server: https://{{ loadbalancer }}:6443"
+  - name: Copy confile to home directory
+    ansible.builtin.copy:
+      src: /etc/rancher/k3s/k3s.yaml
+      dest: ~/.kube/config
+      owner: carlsonp
+      group: carlsonp
+      mode: u=rw,g-rwx,o-rwx
   - name: Wait for cluster handshake and spinup
     ansible.builtin.pause:
-      seconds: 10
+      seconds: 5
   - name: Get node status
     ansible.builtin.command: kubectl get nodes
     register: kubenodes
   - name: Show kubectl get nodes result
     ansible.builtin.debug: msg="{{ kubenodes.stdout }}"
-  - name: Add Longhorn Helm repo
-    ansible.builtin.command: helm repo add longhorn https://charts.longhorn.io
+  - name: Add Helm repos
+    ansible.builtin.command: "{{ item }}"
+    with_items:
+      - helm repo add longhorn https://charts.longhorn.io
+      - helm repo add metallb https://metallb.github.io/metallb
+      - helm repo add milvus https://milvus-io.github.io/milvus-helm/
+      - helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
   - name: Update Helm repos
     ansible.builtin.command: helm repo update
+  - name: Install metallb (load balancer)
+    when: inventory_hostname in ['system76laptop']
+    ansible.builtin.command: helm upgrade --install metallb metallb/metallb --create-namespace --namespace metallb-system
