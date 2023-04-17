@@ -19,18 +19,26 @@
     ansible.builtin.unarchive:
       # https://github.com/helm/helm/releases
       src: https://get.helm.sh/helm-v3.11.3-linux-amd64.tar.gz
-      dest: /usr/local/bin
+      dest: /usr/local/bin/
       extra_opts: "--strip-components=1" # skip first folder
       owner: root
       group: root
       mode: 0755
       remote_src: true
+  - name: Download argo-cd binary CLI
+    become: true
+    ansible.builtin.get_url:
+      url: https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-linux-amd64
+      dest: /usr/local/bin/argocd
+      owner: root
+      group: root
+      mode: 0755
   - name: Install cert-manager cmctl binary
     become: true
     ansible.builtin.unarchive:
       # https://github.com/cert-manager/cert-manager/releases
       src: https://github.com/cert-manager/cert-manager/releases/download/v1.11.1/cmctl-linux-amd64.tar.gz
-      dest: /usr/local/bin
+      dest: /usr/local/bin/
       owner: root
       group: root
       mode: 0755
@@ -80,6 +88,7 @@
       - helm repo add milvus https://milvus-io.github.io/milvus-helm/
       - helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
       - helm repo add jetstack https://charts.jetstack.io
+      - helm repo add argo https://argoproj.github.io/argo-helm
   - name: Update Helm repos
     ansible.builtin.command: helm repo update
   - name: Install metallb (load balancer)
