@@ -5,6 +5,39 @@
   - blueantec
   - system76laptop
   tasks:
+  - name: Check if uninstall script exists
+    ansible.builtin.stat:
+      path: /usr/local/bin/k3s-uninstall.sh
+    register: k3s_uninstall
   - name: k3s Kubernetes uninstall
     become: true
     ansible.builtin.command: /usr/local/bin/k3s-uninstall.sh
+    when: k3s_uninstall.stat.exists == true
+  # adapted from: https://github.com/techno-tim/k3s-ansible/blob/master/roles/reset/tasks/main.yml
+  - name: Umount k3s filesystems
+    include_tasks: k3s_unmount.yml
+    with_items:
+      - /run/k3s
+      - /var/lib/kubelet
+      - /run/netns
+      - /var/lib/rancher/k3s
+      - /var/lib/kubelet/pods
+      - /var/lib/kubelet/plugins
+      - /run/netns/cni/
+    loop_control:
+      loop_var: mounted_fs
+  - name: Remove service files, binaries and data
+    ansible.builtin.file:
+      name: "{{ item }}"
+      state: absent
+    become: true
+    with_items:
+      - /usr/local/bin/k3s
+      - /etc/rancher/k3s
+      - /run/k3s
+      - /run/flannel
+      - /etc/rancher/
+      - /var/lib/kubelet
+      - /var/lib/rancher/k3s
+      - /var/lib/rancher/
+      - /var/lib/cni/
