@@ -75,6 +75,38 @@
       path: /etc/rancher/k3s/k3s.yaml
       regexp: "server: https://.*:6443"
       replace: "server: https://{{ loadbalancer }}:6443"
+  # https://docs.k3s.io/installation/private-registry
+  - name: Adjust mirrors to use our local pull-through-cache
+    become: true
+    ansible.builtin.copy:
+      dest: "/etc/rancher/k3s/registries.yaml"
+      owner: root
+      group: root
+      mode: '0644'
+      content: |
+        mirrors:
+          docker.io:
+            endpoint:
+              - "http://192.168.1.226:5001"
+          ghcr.io:
+            endpoint:
+              - "http://192.168.1.226:5001"
+          quay.io:
+            endpoint:
+              - "http://192.168.1.226:5001"
+          lscr.io:
+            endpoint:
+              - "http://192.168.1.226:5001"
+          http://192.168.1.226:5000:
+            endpoint:
+              - "http://192.168.1.226:5000"
+  - name: make sure k3s has restarted to take advantage of settings
+    become: true
+    service:
+      name: k3s
+      state: restarted
+      enabled: yes
+
   - name: Copy confile to home directory
     ansible.builtin.copy:
       src: /etc/rancher/k3s/k3s.yaml
