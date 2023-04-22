@@ -101,6 +101,7 @@
       - helm repo add argo https://argoproj.github.io/argo-helm
       - helm repo add authelia https://charts.authelia.com
       - helm repo add bitnami https://charts.bitnami.com/bitnami
+      - helm repo add aqua https://aquasecurity.github.io/helm-charts/
   - name: Update Helm repos
     ansible.builtin.command: helm repo update
   - name: Install metallb (load balancer)
