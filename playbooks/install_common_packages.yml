@@ -72,13 +72,21 @@
         - containerd.io
       state: latest
       update_cache: yes
-  - name: make sure docker has started
+  - name: Adjust Docker settings for registries and pull-through-cache
     become: true
-    service:
-      name: docker
-      state: started
-      enabled: yes
-  
+    ansible.builtin.copy:
+      dest: "/etc/docker/daemon.json"
+      owner: root
+      group: root
+      mode: '0644'
+      content: |
+        {
+        "insecure-registries": ["192.168.1.226:5000"],
+        "registry-mirrors": ["http://192.168.1.226:5001"],
+        "features": {
+            "buildkit" : true
+          }
+        }
   # post-install Docker steps
   # https://docs.docker.com/engine/install/linux-postinstall/
   - name: make sure docker group exists
@@ -92,6 +100,12 @@
       name: '{{ ansible_user_id }}'
       groups: docker
       append: yes # this ensures it will add-to and not replace all groups
+  - name: make sure docker has restarted to take advantage of settings
+    become: true
+    service:
+      name: docker
+      state: restarted
+      enabled: yes
 
   # install latest docker-compose
   # https://docs.docker.com/compose/cli-command/#install-on-linux
