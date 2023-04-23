@@ -97,6 +97,9 @@
           lscr.io:
             endpoint:
               - "http://192.168.1.226:5001"
+          ecr.aws:
+            endpoint:
+              - "http://192.168.1.226:5001"
           http://192.168.1.226:5000:
             endpoint:
               - "http://192.168.1.226:5000"
