@@ -28,7 +28,8 @@
   - name: Download argo-cd binary CLI
     become: true
     ansible.builtin.get_url:
-      url: https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-linux-amd64
+      # https://github.com/argoproj/argo-cd/releases/
+      url: https://github.com/argoproj/argo-cd/releases/download/v2.7.1/argocd-linux-amd64
       dest: /usr/local/bin/argocd
       owner: root
       group: root
