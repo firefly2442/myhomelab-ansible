@@ -69,7 +69,7 @@
           option ra 'server'
           option ra_management '1'
           # sets pi4 pihole as DNS provider and our backup
-          list dhcp_option '6,192.168.1.226,192.168.1.105'
+          list dhcp_option '6,192.168.1.226,192.168.1.140'
   - name: Add static DHCP mappings to /etc/config/dhcp
     ansible.builtin.blockinfile:
       path: /etc/config/dhcp
