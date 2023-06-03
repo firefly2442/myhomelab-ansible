@@ -94,7 +94,7 @@
       - { mac: '00:1A:92:D8:CB:2E', name: 'antec-backup', ip: '192.168.1.140' }
       - { mac: 'DC:A6:32:BD:63:F8', name: 'pifour', ip: '192.168.1.226' }
       - { mac: '84:D8:1B:F4:AF:8C', name: 'hs105-4', ip: '192.168.1.172' }
-      - { mac: '9C:8E:CD:22:F0:06', name: 'IP4M-1051W', ip: '192.168.1.111' }
+      - { mac: '9C:8E:CD:22:DC:7A', name: 'IP4M-1051W', ip: '192.168.1.111' }
   - name: manual step for cleanup of original dhcp lan entry
     debug:
       msg: "Manually edit /etc/config/dhcp and remove the top block defining - config dhcp 'lan'"
