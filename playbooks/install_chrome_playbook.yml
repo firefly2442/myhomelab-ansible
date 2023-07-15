@@ -4,6 +4,7 @@
   - alienware
   - blueantec
   - minisforum
+  - dellxps
   tasks:
   - name: install Chrome from deb
     become: true

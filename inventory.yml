@@ -18,6 +18,8 @@ ubuntu:
           ansible_host: 192.168.1.124
         minisforum:
           ansible_host: 192.168.1.112
+        dellxps:
+          ansible_host: 192.168.1.114
 
 router:
   hosts:
