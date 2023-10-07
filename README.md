@@ -73,7 +73,13 @@ Install k3s Kubernetes cluster
 ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --extra-vars "token=secret master=192.168.1.105 loadbalancer=192.168.1.226"
 ```
 
-Teardown k3s Kubernetes cluster
+Install applications to k3s Kubernetes cluster
+
+```shell
+ansible-playbook playbooks/deploy_k3s_applications.yml -i inventory.yml -K -k
+```
+
+Teardown entire k3s Kubernetes cluster
 
 ```shell
 ansible-playbook playbooks/teardown_k3s_kubernetes.yml -i inventory.yml -K -k

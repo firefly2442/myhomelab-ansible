@@ -1,0 +1,6 @@
+# see stock version
+# https://github.com/longhorn/longhorn/blob/master/chart/values.yaml
+
+service:
+  ui:
+    type: LoadBalancer
