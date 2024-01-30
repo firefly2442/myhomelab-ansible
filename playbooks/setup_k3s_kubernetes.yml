@@ -141,3 +141,12 @@
       - helm repo add weaviate https://weaviate.github.io/weaviate-helm
   - name: Update Helm repos
     ansible.builtin.command: helm repo update
+  - name: Download Flux CLI
+    # https://fluxcd.io/flux/installation/
+    ansible.builtin.get_url:
+      url: https://fluxcd.io/install.sh
+      dest: /tmp/install-flux.sh
+      mode: 0755
+  - name: Install Flux CLI
+    become: true
+    ansible.builtin.shell: bash /tmp/install-flux.sh
