@@ -7,7 +7,7 @@
   tasks:
   - name: Install required packages (needed for longhorn and other tooling)
     become: true
-    apt:
+    ansible.builtin.apt:
       name:
         - open-iscsi
         - jq
@@ -150,3 +150,10 @@
   - name: Install Flux CLI
     become: true
     ansible.builtin.shell: bash /tmp/install-flux.sh
+  - name: Install k9s terminal client for Kubernetes
+    # https://github.com/derailed/k9s/releases
+    become: true
+    ansible.builtin.apt:
+      deb: https://github.com/derailed/k9s/releases/download/v0.31.7/k9s_linux_amd64.deb
+      install_recommends: yes
+      update_cache: no
