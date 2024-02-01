@@ -167,9 +167,3 @@
     environment:
       GITHUB_TOKEN: "{{ githubpat | quote }}"
     ansible.builtin.command: flux bootstrap github --token-auth --owner=firefly2442 --repository=my-flux-kubernetes --branch=master --path=clusters/home --personal --private=false
-  - name: Create namespaces in Kubernetes
-    when: inventory_hostname in ['system76laptop']
-    ansible.builtin.command: "{{ item }}"
-    with_items:
-      - kubectl create ns metallb-system
-      - kubectl create ns cert-manager
