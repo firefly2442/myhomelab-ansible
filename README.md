@@ -70,7 +70,7 @@ ansible-playbook playbooks/install_blueantec_packages.yml -i inventory.yml -K -k
 Install k3s Kubernetes cluster
 
 ```shell
-ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --extra-vars "token=secret master=192.168.1.105 loadbalancer=192.168.1.226"
+ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --extra-vars "token=secret master=192.168.1.105 loadbalancer=192.168.1.226 githubpat=secret"
 ```
 
 Install applications to k3s Kubernetes cluster
