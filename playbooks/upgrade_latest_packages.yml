@@ -8,4 +8,6 @@
       upgrade: yes
       update_cache: yes
       install_recommends: yes
-      
+  - name: show if reboot required
+    debug:
+      msg: "{{ lookup('file', '/var/run/reboot-required', errors='ignore') }}"
