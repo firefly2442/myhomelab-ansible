@@ -4,10 +4,12 @@
   - name: set apt proxy to the local cache mirror
     become: true
     copy:
-      dest: /etc/apt/apt.conf.d/01proxy
+      dest: /etc/apt/apt.conf.d/00squidproxy
       content: |
-        Acquire::HTTP::Proxy "http://192.168.1.226:3142";
-        Acquire::HTTPS::Proxy "false";
+        Acquire {
+          Retries "0";
+          HTTP { Proxy "http://192.168.1.226:3143"; };
+        };
 
   - name: setup Systemd script for automating rclone backups
     become: true
