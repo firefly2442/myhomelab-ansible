@@ -55,6 +55,49 @@
           option dest 'wan'
           option target 'REJECT'
           option src 'lan'
+  # https://jeff.vtkellers.com/posts/technology/force-all-dns-queries-through-pihole-with-openwrt/
+  # https://forum.openwrt.org/t/doing-a-port-forward-on-all-lan-ips-except-certain-ips/98461/2
+  - name: firewall rule routing external calls to DNS to our local pihole instance
+    ansible.builtin.blockinfile:
+      path: /etc/config/firewall
+      block: |
+        config redirect
+          option target 'DNAT'
+          option name 'Redirect_DNS_Pihole'
+          option src 'lan'
+          option src_ip '!pihole'
+          option src_dport '53'
+          option dest_ip '192.168.1.226'
+          option dest_port '53'
+        config ipset
+          option name 'pihole'
+          option family 'ipv4'
+          list entry '192.168.1.226'
+          list entry '192.168.1.140'
+          list match 'src_ip'
+        config nat
+          option name 'masquerade_pihole'
+          list proto 'tcp'
+          list proto 'udp'
+          option src 'lan'
+          option dest_ip '192.168.1.226'
+          option dest_port '53'
+          option target 'MASQUERADE'
+  - name: firewall rule blocking external DNS over HTTPS on some popular providers to try to force pihole usage
+    ansible.builtin.blockinfile:
+      path: /etc/config/firewall
+      block: |
+        config rule
+          option name 'BlockExternalDNS'
+          option src 'lan'
+          option dest 'wan'
+          list dest_ip '8.8.8.8'
+          list dest_ip '1.1.1.1'
+          list dest_ip '76.76.2.0'
+          list dest_ip '8.8.4.4'
+          list dest_ip '1.0.0.1'
+          option dest_port '443'
+          option target 'REJECT'
   # https://openwrt.org/docs/guide-user/base-system/dhcp
   - name: add Raspberry Pi 4 as DNS provider via pihole
     ansible.builtin.blockinfile:
