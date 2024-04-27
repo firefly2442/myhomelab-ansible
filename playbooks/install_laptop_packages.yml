@@ -61,7 +61,7 @@
     get_url:
       # they don't seem to have a "latest" URL or something we can grab so this just dumps a download in the home folder for now
       # https://www.rstudio.com/products/rstudio/download/#download
-      url: https://download1.rstudio.org/desktop/jammy/amd64/rstudio-2022.07.2-576-amd64.deb
+      url: https://download1.rstudio.org/electron/jammy/amd64/rstudio-2023.12.1-402-amd64.deb
       dest: ~/
   - name: RStudio IDE message
     debug:
