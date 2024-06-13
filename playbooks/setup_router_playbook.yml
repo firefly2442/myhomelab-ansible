@@ -73,7 +73,7 @@
           option name 'pihole'
           option family 'ipv4'
           list entry '192.168.1.226'
-          list entry '192.168.1.140'
+          list entry '192.168.1.114'
           list match 'src_ip'
         config nat
           option name 'masquerade_pihole'
@@ -112,7 +112,7 @@
           option ra 'server'
           option ra_management '1'
           # sets pi4 pihole as DNS provider and our backup
-          list dhcp_option '6,192.168.1.226,192.168.1.140'
+          list dhcp_option '6,192.168.1.226,192.168.1.114'
   - name: Add static DHCP mappings to /etc/config/dhcp
     ansible.builtin.blockinfile:
       path: /etc/config/dhcp
@@ -134,7 +134,6 @@
       - { mac: '98:DA:C4:4A:37:5A', name: 'hs105-1', ip: '192.168.1.147' }
       - { mac: '98:DA:C4:B8:D8:36', name: 'hs105-2', ip: '192.168.1.200' }
       - { mac: '98:DA:C4:4A:26:D6', name: 'hs105-3', ip: '192.168.1.188' }
-      - { mac: '00:1A:92:D8:CB:2E', name: 'antec-backup', ip: '192.168.1.140' }
       - { mac: 'DC:A6:32:BD:63:F8', name: 'pifour', ip: '192.168.1.226' }
       - { mac: '84:D8:1B:F4:AF:8C', name: 'hs105-4', ip: '192.168.1.172' }
       - { mac: '9C:8E:CD:22:DC:7A', name: 'IP4M-1051W', ip: '192.168.1.111' }
