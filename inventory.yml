@@ -8,8 +8,6 @@ ubuntu:
           ansible_host: 192.168.1.224
     amd64:
       hosts:
-        antecbackup:
-          ansible_host: 192.168.1.140
         blueantec:
           ansible_host: 192.168.1.113
         alienware:
