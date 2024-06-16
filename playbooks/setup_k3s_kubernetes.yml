@@ -48,8 +48,8 @@
   - name: Install cert-manager cmctl binary
     become: true
     ansible.builtin.unarchive:
-      # https://github.com/cert-manager/cert-manager/releases
-      src: https://github.com/cert-manager/cert-manager/releases/download/v1.14.6/cert-manager-cmctl-linux-amd64.tar.gz
+      # https://github.com/cert-manager/cmctl/releases
+      src: https://github.com/cert-manager/cmctl/releases/download/v2.1.0/cmctl_linux_amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root

@@ -5,6 +5,7 @@
   - blueantec
   - minisforum
   - dellxps
+  - antecbackup
   tasks:
   - name: install Chrome from deb
     become: true
