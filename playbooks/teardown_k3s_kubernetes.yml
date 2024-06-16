@@ -4,6 +4,7 @@
   - alienware
   - blueantec
   - system76laptop
+  - antecbackup
   tasks:
   - name: Check if uninstall script exists
     ansible.builtin.stat:
