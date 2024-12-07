@@ -141,7 +141,7 @@
       - { mac: '34:17:EB:E1:2A:A1', name: 'dellxps', ip: '192.168.1.114' }
   - name: manual step for cleanup of original dhcp lan entry
     debug:
-      msg: "Manually edit /etc/config/dhcp and remove the top block defining - config dhcp 'lan'"
+      msg: "Manually edit /etc/config/dhcp and remove the top block defining - config dhcp 'lan'.  We only want to use the block we defined.  Also make sure each host only has one block defined.  If there are duplicates things will break."
   - name: setup complete, reboot router
     debug:
       msg: "You may now reboot the router"
