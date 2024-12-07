@@ -145,3 +145,10 @@
   - name: setup complete, reboot router
     debug:
       msg: "You may now reboot the router"
+  # note that for pihole and DNS, systemd now has a local caching resolver
+  # this is why /etc/resolv.conf lists the following:
+  # nameserver 127.0.0.53
+  # this caches some entries for faster responses
+  # to find what upstream DNS server it's using (which should be pihole) use:
+  # sudo resolvectl status
+  # there should be no need to directly edit /etc/resolv.conf
