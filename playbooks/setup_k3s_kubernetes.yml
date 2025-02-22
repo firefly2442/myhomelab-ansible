@@ -19,7 +19,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/helm/helm/releases
-      src: https://get.helm.sh/helm-v3.16.3-linux-amd64.tar.gz
+      src: https://get.helm.sh/helm-v3.17.1-linux-amd64.tar.gz
       dest: /usr/local/bin/
       extra_opts: "--strip-components=1" # skip first folder
       owner: root
@@ -30,7 +30,7 @@
     become: true
     ansible.builtin.get_url:
       # https://github.com/argoproj/argo-cd/releases/
-      url: https://github.com/argoproj/argo-cd/releases/download/v2.12.7/argocd-linux-amd64
+      url: https://github.com/argoproj/argo-cd/releases/download/v2.14.2/argocd-linux-amd64
       dest: /usr/local/bin/argocd
       owner: root
       group: root
@@ -39,7 +39,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/FairwindsOps/nova/releases
-      src: https://github.com/FairwindsOps/nova/releases/download/v3.11.0/nova_3.11.0_linux_amd64.tar.gz
+      src: https://github.com/FairwindsOps/nova/releases/download/v3.11.3/nova_3.11.3_linux_amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
@@ -65,15 +65,15 @@
     # https://github.com/k3s-io/k3s/releases
     # we disable local-storage so we can use longhorn later
     # https://docs.k3s.io/cli/server
-    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.31.2+k3s1 sh -s - server --cluster-init --tls-san {{ loadbalancer | quote }} --disable servicelb --disable local-storage
+    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.32.1+k3s1 sh -s - server --cluster-init --tls-san {{ loadbalancer | quote }} --disable servicelb --disable local-storage
   - name: Install k3s on other nodes
     when: inventory_hostname in ['blueantec', 'alienware', 'antecbackup']
     become: true
-    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.31.2+k3s1 sh -s - server --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }} --disable servicelb --disable local-storage
+    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.32.1+k3s1 sh -s - server --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }} --disable servicelb --disable local-storage
   - name: Install k3s on laptop with just control plane, this way no workloads get assigned
     when: inventory_hostname in ['system76laptop']
     become: true
-    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.31.2+k3s1 sh -s - server --node-taint CriticalAddonsOnly=true:NoExecute --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }} --disable servicelb --disable-etcd --disable local-storage
+    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.32.1+k3s1 sh -s - server --node-taint CriticalAddonsOnly=true:NoExecute --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }} --disable servicelb --disable-etcd --disable local-storage
   - name: Set load balancer IP in /etc/rancher/k3s/k3s.yaml
     become: true
     ansible.builtin.replace:
@@ -171,6 +171,6 @@
     # https://github.com/derailed/k9s/releases
     become: true
     ansible.builtin.apt:
-      deb: https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.deb
+      deb: https://github.com/derailed/k9s/releases/download/v0.40.5/k9s_linux_amd64.deb
       install_recommends: yes
       update_cache: no
