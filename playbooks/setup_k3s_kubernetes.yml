@@ -19,7 +19,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/helm/helm/releases
-      src: https://get.helm.sh/helm-v3.17.1-linux-amd64.tar.gz
+      src: https://get.helm.sh/helm-v3.17.2-linux-amd64.tar.gz
       dest: /usr/local/bin/
       extra_opts: "--strip-components=1" # skip first folder
       owner: root
@@ -30,7 +30,7 @@
     become: true
     ansible.builtin.get_url:
       # https://github.com/argoproj/argo-cd/releases/
-      url: https://github.com/argoproj/argo-cd/releases/download/v2.14.2/argocd-linux-amd64
+      url: https://github.com/argoproj/argo-cd/releases/download/v2.14.5/argocd-linux-amd64
       dest: /usr/local/bin/argocd
       owner: root
       group: root
@@ -143,21 +143,30 @@
     register: kubenodes
   - name: Show kubectl get nodes result
     ansible.builtin.debug: msg="{{ kubenodes.stdout }}"
-  # - name: Add Helm repos
-  #   ansible.builtin.command: "{{ item }}"
-  #   with_items:
-  #     - helm repo add longhorn https://charts.longhorn.io
-  #     - helm repo add metallb https://metallb.github.io/metallb
-  #     - helm repo add milvus https://milvus-io.github.io/milvus-helm/
-  #     - helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-  #     - helm repo add jetstack https://charts.jetstack.io
-  #     - helm repo add argo https://argoproj.github.io/argo-helm
-  #     - helm repo add authelia https://charts.authelia.com
-  #     - helm repo add bitnami https://charts.bitnami.com/bitnami
-  #     - helm repo add aqua https://aquasecurity.github.io/helm-charts/
-  #     - helm repo add weaviate https://weaviate.github.io/weaviate-helm
-  # - name: Update Helm repos
-  #   ansible.builtin.command: helm repo update
+  - name: Add Helm repos
+    ansible.builtin.command: "{{ item }}"
+    with_items:
+      # - helm repo add longhorn https://charts.longhorn.io
+      - helm repo add metallb https://metallb.github.io/metallb
+      # - helm repo add milvus https://milvus-io.github.io/milvus-helm/
+      # - helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+      # - helm repo add jetstack https://charts.jetstack.io
+      # - helm repo add argo https://argoproj.github.io/argo-helm
+      # - helm repo add authelia https://charts.authelia.com
+      # - helm repo add bitnami https://charts.bitnami.com/bitnami
+      # - helm repo add aqua https://aquasecurity.github.io/helm-charts/
+      # - helm repo add weaviate https://weaviate.github.io/weaviate-helm
+  - name: Update Helm repos
+    ansible.builtin.command: helm repo update
+  # https://docs.ansible.com/ansible/latest/collections/kubernetes/core/helm_module.html
+  - name: Install metallb load balancer
+    when: inventory_hostname in ['system76laptop']
+    kubernetes.core.helm:
+      release_name: metallb
+      chart_ref: metallb/metallb
+      release_namespace: metallb-system
+      create_namespace: true
+      wait: true
   - name: Download Flux CLI
     # https://fluxcd.io/flux/installation/
     ansible.builtin.get_url:
@@ -171,6 +180,6 @@
     # https://github.com/derailed/k9s/releases
     become: true
     ansible.builtin.apt:
-      deb: https://github.com/derailed/k9s/releases/download/v0.40.5/k9s_linux_amd64.deb
+      deb: https://github.com/derailed/k9s/releases/download/v0.40.8/k9s_linux_amd64.deb
       install_recommends: yes
       update_cache: no
