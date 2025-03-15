@@ -121,9 +121,16 @@
           registry.k8s.io:
             endpoint:
               - "http://192.168.1.226:5001"
-          http://192.168.1.226:5000:
+          192.168.1.226:5000:
             endpoint:
               - "http://192.168.1.226:5000"
+        configs:
+          "192.168.1.226:5000":
+            tls:
+              insecure_skip_verify: true
+          "192.168.1.226:5001":
+            tls:
+              insecure_skip_verify: true
   # - name: make sure k3s has restarted to take advantage of settings
   #   become: true
   #   service:
