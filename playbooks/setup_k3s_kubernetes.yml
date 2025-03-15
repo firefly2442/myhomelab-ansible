@@ -183,3 +183,12 @@
       deb: https://github.com/derailed/k9s/releases/download/v0.40.8/k9s_linux_amd64.deb
       install_recommends: yes
       update_cache: no
+  - name: Download Longhorn binary CLI
+    become: true
+    ansible.builtin.get_url:
+      # https://github.com/longhorn/cli/releases
+      url: https://github.com/longhorn/cli/releases/download/v1.8.1/longhornctl-linux-amd64
+      dest: /usr/local/bin/longhornctl
+      owner: root
+      group: root
+      mode: 0755
