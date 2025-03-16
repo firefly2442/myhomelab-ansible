@@ -194,7 +194,7 @@
     # https://github.com/derailed/k9s/releases
     become: true
     ansible.builtin.apt:
-      deb: https://github.com/derailed/k9s/releases/download/v0.40.8/k9s_linux_amd64.deb
+      deb: https://github.com/derailed/k9s/releases/download/v0.40.10/k9s_linux_amd64.deb
       install_recommends: yes
       update_cache: no
   - name: Download Longhorn binary CLI
