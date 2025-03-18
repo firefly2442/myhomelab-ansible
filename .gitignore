@@ -3,6 +3,9 @@
 /playbooks/secrets/wireless
 
 
+# our sealed secrets private key
+sealed-secrets-key-backup.yaml
+
 
 
 
