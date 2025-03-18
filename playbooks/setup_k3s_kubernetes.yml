@@ -19,6 +19,8 @@
         - jq
         - nfs-common
         - cryptsetup
+        # for bitnami sealed secrets in k8s
+        - kubeseal
       state: latest
       install_recommends: yes
       update_cache: no
