@@ -19,8 +19,6 @@
         - jq
         - nfs-common
         - cryptsetup
-        # for bitnami sealed secrets in k8s
-        - kubeseal
       state: latest
       install_recommends: yes
       update_cache: no
@@ -205,6 +203,16 @@
       # https://github.com/longhorn/cli/releases
       url: https://github.com/longhorn/cli/releases/download/v1.8.1/longhornctl-linux-amd64
       dest: /usr/local/bin/longhornctl
+      owner: root
+      group: root
+      mode: 0755
+  # for bitnami sealed secrets in k8s
+  - name: Download kubeseal binary CLI
+    become: true
+    ansible.builtin.get_url:
+      # https://github.com/bitnami-labs/sealed-secrets/releases
+      url: https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.28.0/kubeseal-0.28.0-linux-amd64.tar.gz
+      dest: /usr/local/bin/kubeseal
       owner: root
       group: root
       mode: 0755
