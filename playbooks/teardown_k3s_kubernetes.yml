@@ -1,6 +1,6 @@
 ---
 - hosts:
-  - minisforum
+  - gmktec
   - alienware
   - blueantec
   - system76laptop

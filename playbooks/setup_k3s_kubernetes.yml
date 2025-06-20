@@ -1,6 +1,6 @@
 ---
 - hosts:
-  - minisforum
+  - gmktec
   - alienware
   - blueantec
   - system76laptop
@@ -67,7 +67,7 @@
       url: https://get.k3s.io
       dest: /tmp/k3s.sh
   - name: Install k3s on master
-    when: inventory_hostname in ['minisforum']
+    when: inventory_hostname in ['gmktec']
     become: true
     # https://github.com/k3s-io/k3s/releases
     # we disable local-storage so we can use longhorn later
