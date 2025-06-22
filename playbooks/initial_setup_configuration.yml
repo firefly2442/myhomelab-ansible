@@ -37,3 +37,25 @@
       state: started
       daemon_reload: yes
       enabled: yes
+  # we want to use our own pihole servers for DNS resolution
+  - name: Disable and stop systemd-resolved service
+    become: true
+    ansible.builtin.systemd:
+      name: systemd-resolved
+      enabled: false
+      state: stopped
+  - name: Remove /etc/resolv.conf symlink
+    become: true
+    ansible.builtin.file:
+      path: /etc/resolv.conf
+      state: absent
+  - name: Create static /etc/resolv.conf
+    become: true
+    ansible.builtin.copy:
+      dest: /etc/resolv.conf
+      content: |
+        nameserver 192.168.1.226
+        nameserver 192.168.1.114
+      owner: root
+      group: root
+      mode: '0644'
