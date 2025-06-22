@@ -160,11 +160,12 @@
   - name: Add Helm repos
     ansible.builtin.command: "{{ item }}"
     with_items:
-      # - helm repo add longhorn https://charts.longhorn.io
+      - helm repo add longhorn https://charts.longhorn.io
+      - helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets/
       - helm repo add metallb https://metallb.github.io/metallb
       # - helm repo add milvus https://milvus-io.github.io/milvus-helm/
       # - helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-      # - helm repo add jetstack https://charts.jetstack.io
+      - helm repo add jetstack https://charts.jetstack.io
       # - helm repo add argo https://argoproj.github.io/argo-helm
       # - helm repo add authelia https://charts.authelia.com
       # - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -173,12 +174,40 @@
   - name: Update Helm repos
     ansible.builtin.command: helm repo update
   # https://docs.ansible.com/ansible/latest/collections/kubernetes/core/helm_module.html
+  # some of these applications are needed to be installed here as opposed to
+  # in FluxCD because the CRDs need to be created and available first
   - name: Install metallb load balancer
     when: inventory_hostname in ['system76laptop']
     kubernetes.core.helm:
       release_name: metallb
       chart_ref: metallb/metallb
       release_namespace: metallb-system
+      create_namespace: true
+      wait: true
+  - name: Install sealed secrets
+    when: inventory_hostname in ['system76laptop']
+    kubernetes.core.helm:
+      release_name: sealed-secrets
+      chart_ref: sealed-secrets/sealed-secrets
+      release_namespace: kube-system
+      create_namespace: true
+      wait: true
+  - name: Install cert-manager
+    when: inventory_hostname in ['system76laptop']
+    kubernetes.core.helm:
+      release_name: cert-manager
+      chart_ref: jetstack/cert-manager
+      release_namespace: cert-manager
+      create_namespace: true
+      wait: true
+      values:
+        installCRDs: true
+  - name: Install longhorn
+    when: inventory_hostname in ['system76laptop']
+    kubernetes.core.helm:
+      release_name: longhorn
+      chart_ref: longhorn/longhorn
+      release_namespace: longhorn-system
       create_namespace: true
       wait: true
   - name: Download Flux CLI
