@@ -246,6 +246,9 @@
       group: root
       mode: 0755
       remote_src: true
+  - name: Add taint for pop-os so no pods get assigned
+    when: inventory_hostname in ['system76laptop']
+    ansible.builtin.shell: kubectl taint --overwrite nodes pop-os key=NoSchedule:NoSchedule
   - name: Take a backup of the sealed secrets private key
     when: inventory_hostname in ['system76laptop']
     ansible.builtin.shell: kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml > sealed-secrets-key-backup.yaml
