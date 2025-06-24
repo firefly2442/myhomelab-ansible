@@ -5,6 +5,7 @@
   - blueantec
   - system76laptop
   - antecbackup
+  - dellxps
   tasks:
   - name: Install required packages (needed for longhorn and other tooling)
     become: true
@@ -66,29 +67,77 @@
     ansible.builtin.get_url:
       url: https://get.k3s.io
       dest: /tmp/k3s.sh
-  - name: Install k3s on master
+  # https://github.com/k3s-io/k3s/releases
+  # we disable local-storage so we can use longhorn later
+  # https://docs.k3s.io/cli/server
+  - name: Install k3s on initial etcd/control-plane/worker node (cluster-init)
     when: inventory_hostname in ['gmktec']
     become: true
-    # https://github.com/k3s-io/k3s/releases
-    # we disable local-storage so we can use longhorn later
-    # https://docs.k3s.io/cli/server
-    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.33.1+k3s1 sh -s - server --cluster-init --tls-san {{ loadbalancer | quote }} --disable servicelb --disable local-storage
-  - name: Install k3s on other nodes
-    when: inventory_hostname in ['blueantec', 'alienware', 'antecbackup']
+    ansible.builtin.shell: |
+      cat /tmp/k3s.sh | \
+      K3S_KUBECONFIG_MODE="644" \
+      K3S_TOKEN={{ token | quote }} \
+      INSTALL_K3S_VERSION=v1.33.1+k3s1 \
+      sh -s - server \
+        --cluster-init \
+        --tls-san {{ loadbalancer | quote }} \
+        --disable servicelb \
+        --disable local-storage
+  - name: Install k3s on etcd/control-plane/worker nodes
+    when: inventory_hostname in ['dellxps', 'antecbackup']
     become: true
-    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.33.1+k3s1 sh -s - server --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }} --disable servicelb --disable local-storage
-  - name: Install k3s on laptop with just control plane, this way no workloads get assigned
+    ansible.builtin.shell: |
+      cat /tmp/k3s.sh | \
+      K3S_KUBECONFIG_MODE="644" \
+      K3S_TOKEN={{ token | quote }} \
+      INSTALL_K3S_VERSION=v1.33.1+k3s1 \
+      sh -s - server \
+        --server https://{{ master | quote }}:6443 \
+        --tls-san {{ loadbalancer | quote }} \
+        --disable servicelb \
+        --disable local-storage
+  - name: Install k3s on control-plane-only node (no etcd, no workloads)
     when: inventory_hostname in ['system76laptop']
     become: true
-    ansible.builtin.shell: cat /tmp/k3s.sh | K3S_KUBECONFIG_MODE="644" K3S_TOKEN={{ token | quote }} INSTALL_K3S_VERSION=v1.33.1+k3s1 sh -s - server --node-taint CriticalAddonsOnly=true:NoExecute --server https://{{ master | quote }}:6443 --tls-san {{ loadbalancer | quote }} --disable servicelb --disable-etcd --disable local-storage
-  - name: Set load balancer IP in /etc/rancher/k3s/k3s.yaml
+    ansible.builtin.shell: |
+      cat /tmp/k3s.sh | \
+      K3S_KUBECONFIG_MODE="644" \
+      K3S_TOKEN={{ token | quote }} \
+      INSTALL_K3S_VERSION=v1.33.1+k3s1 \
+      sh -s - server \
+        --server https://{{ master | quote }}:6443 \
+        --tls-san {{ loadbalancer | quote }} \
+        --disable servicelb \
+        --disable-etcd \
+        --disable local-storage \
+        --node-taint CriticalAddonsOnly=true:NoExecute
+  - name: Install k3s on worker-only nodes
+    when: inventory_hostname in ['alienware', 'blueantec']
+    become: true
+    ansible.builtin.shell: |
+      cat /tmp/k3s.sh | \
+      K3S_KUBECONFIG_MODE="644" \
+      K3S_TOKEN={{ token | quote }} \
+      INSTALL_K3S_VERSION=v1.33.1+k3s1 \
+      sh -s - agent \
+        --server https://{{ master | quote }}:6443
+  - name: Set load balancer IP for workers only in /etc/rancher/k3s/k3s.yaml
+    when: inventory_hostname in ['dellxps', 'antecbackup', 'gmktec', 'system76laptop']
     become: true
     ansible.builtin.replace:
       path: /etc/rancher/k3s/k3s.yaml
       regexp: '(server\:\shttps:\/\/).+(\:6443)'
       replace: '\g<1>{{ loadbalancer }}\g<2>'
+  - name: Create /etc/rancher/k3s/ directory if it does not exist
+    become: true
+    ansible.builtin.file:
+      path: /etc/rancher/k3s/
+      state: directory
+      mode: u=rwx,g=rx,o=rx
   # https://docs.k3s.io/installation/private-registry
-  - name: Adjust mirrors to use our local pull-through-cache
+  # login to Dockerhub so we have more authenticated pulls available
+  # https://docs.docker.com/docker-hub/usage/
+  - name: Adjust worker mirrors to use our local pull-through-cache
     become: true
     ansible.builtin.copy:
       dest: "/etc/rancher/k3s/registries.yaml"
@@ -131,18 +180,24 @@
           "192.168.1.226:5001":
             tls:
               insecure_skip_verify: true
+          "registry-1.docker.io":
+            auth:
+              username: pcarlso
+              password: {{ dockerhubtoken }}
   # - name: make sure k3s has restarted to take advantage of settings
   #   become: true
   #   service:
   #     name: k3s
   #     state: restarted
   #     enabled: yes
-  - name: Create a directory if it does not exist
+  - name: Create a directory if it does not exist for workers
+    when: inventory_hostname in ['dellxps', 'antecbackup', 'gmktec', 'system76laptop']
     ansible.builtin.file:
       path: ~/.kube/
       state: directory
       mode: u=rwx,g=rx,o-rwx
-  - name: Copy config file to home directory
+  - name: Copy config file to home directory for workers
+    when: inventory_hostname in ['dellxps', 'antecbackup', 'gmktec', 'system76laptop']
     ansible.builtin.copy:
       src: /etc/rancher/k3s/k3s.yaml
       dest: ~/.kube/config
@@ -153,9 +208,11 @@
     ansible.builtin.pause:
       seconds: 5
   - name: Get node status
+    when: inventory_hostname in ['dellxps', 'antecbackup', 'gmktec', 'system76laptop']
     ansible.builtin.command: kubectl get nodes
     register: kubenodes
   - name: Show kubectl get nodes result
+    when: inventory_hostname in ['dellxps', 'antecbackup', 'gmktec', 'system76laptop']
     ansible.builtin.debug: msg="{{ kubenodes.stdout }}"
   - name: Add Helm repos
     ansible.builtin.command: "{{ item }}"
@@ -249,6 +306,6 @@
   - name: Add taint for pop-os so no pods get assigned
     when: inventory_hostname in ['system76laptop']
     ansible.builtin.shell: kubectl taint --overwrite nodes pop-os key=NoSchedule:NoSchedule
-  - name: Take a backup of the sealed secrets private key
+  - name: Take a backup of the sealed secrets private key, saves in home directory
     when: inventory_hostname in ['system76laptop']
     ansible.builtin.shell: kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml > sealed-secrets-key-backup.yaml

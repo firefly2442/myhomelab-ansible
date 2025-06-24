@@ -5,6 +5,7 @@
   - blueantec
   - system76laptop
   - antecbackup
+  - dellxps
   tasks:
   - name: Check if uninstall script exists
     ansible.builtin.stat:
