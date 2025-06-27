@@ -84,7 +84,10 @@ ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --ext
 | pop-os       | ✅            | ❌   | ❌     | Control-plane only (no etcd or workloads)  |
 
 A `k3s` systemd service will be setup on the control-plane nodes.  On the worker only nodes,
-it will be `k3s-agent` for the systemd service.
+it will be `k3s-agent` for the systemd service.  The workers are also setup as longhorn
+clients meaning they do not directly store any data.  They can mount data from other
+nodes over the network.  This way when they are shutdown, it doesn't impact having to
+rebuild and sync data across the network.
 
 Install applications to k3s Kubernetes cluster
 
