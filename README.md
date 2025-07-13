@@ -73,15 +73,14 @@ Install k3s Kubernetes cluster
 ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --extra-vars "token=secret master=192.168.1.112 loadbalancer=192.168.1.226 dockerhubtoken=secret"
 ```
 
-| Node         | Control Plane | etcd | Worker | Notes                                      |
-|--------------|---------------|------|--------|--------------------------------------------|
-| gmktec       | ✅            | ✅   | ✅     | Core node, part of quorum                  |
-| dellxps      | ✅            | ✅   | ✅     | Core node, part of quorum                  |
-| antecbackup  | ✅            | ✅   | ✅     | Core node, part of quorum                  |
-| system76laptop | ✅          | ❌   | ❌     | Control-plane only (no etcd or workloads)  |
-| alienware    | ❌            | ❌   | ✅     | Worker only                                |
-| blueantec    | ❌            | ❌   | ✅     | Worker only                                |
-| pop-os       | ✅            | ❌   | ❌     | Control-plane only (no etcd or workloads)  |
+| Node         | Control Plane | etcd | Worker | Longhorn | Notes                                      |
+|--------------|---------------|------|--------|--------|--------------------------------------------|
+| gmktec       | ✅            | ✅   | ✅    | ✅    | Core node, part of quorum                  |
+| dellxps      | ✅            | ✅   | ✅    | ✅    | Core node, part of quorum                  |
+| antecbackup  | ✅            | ✅   | ✅    | ✅    | Core node, part of quorum                  |
+| system76laptop | ✅          | ❌   | ❌    | ❌   | Control-plane only (no etcd or workloads)  |
+| alienware    | ❌            | ❌   | ✅    | ❌    | Worker only                                |
+| blueantec    | ❌            | ❌   | ✅    | ❌    | Worker only                                |
 
 A `k3s` systemd service will be setup on the control-plane nodes.  On the worker only nodes,
 it will be `k3s-agent` for the systemd service.  The workers are also setup as longhorn
