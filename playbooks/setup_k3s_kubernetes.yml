@@ -204,6 +204,7 @@
       owner: carlsonp
       group: carlsonp
       mode: u=rw,g-rwx,o-rwx
+      remote_src: true
   - name: Wait for cluster handshake and spinup
     ansible.builtin.pause:
       seconds: 5
