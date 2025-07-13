@@ -27,7 +27,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/helm/helm/releases
-      src: https://get.helm.sh/helm-v3.18.2-linux-amd64.tar.gz
+      src: https://get.helm.sh/helm-v3.18.4-linux-amd64.tar.gz
       dest: /usr/local/bin/
       extra_opts: "--strip-components=1" # skip first folder
       owner: root
@@ -57,7 +57,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/cert-manager/cmctl/releases
-      src: https://github.com/cert-manager/cmctl/releases/download/v2.2.0/cmctl_linux_amd64.tar.gz
+      src: https://github.com/cert-manager/cmctl/releases/download/v2.3.0/cmctl_linux_amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
@@ -77,7 +77,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.1+k3s1 \
+      INSTALL_K3S_VERSION=v1.33.2+k3s1 \
       sh -s - server \
         --cluster-init \
         --tls-san {{ loadbalancer | quote }} \
@@ -90,7 +90,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.1+k3s1 \
+      INSTALL_K3S_VERSION=v1.33.2+k3s1 \
       sh -s - server \
         --server https://{{ master | quote }}:6443 \
         --tls-san {{ loadbalancer | quote }} \
@@ -103,7 +103,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.1+k3s1 \
+      INSTALL_K3S_VERSION=v1.33.2+k3s1 \
       sh -s - server \
         --server https://{{ master | quote }}:6443 \
         --tls-san {{ loadbalancer | quote }} \
@@ -118,7 +118,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.1+k3s1 \
+      INSTALL_K3S_VERSION=v1.33.2+k3s1 \
       sh -s - agent \
         --server https://{{ master | quote }}:6443
   - name: Set load balancer IP for workers only in /etc/rancher/k3s/k3s.yaml
@@ -281,7 +281,7 @@
     # https://github.com/derailed/k9s/releases
     become: true
     ansible.builtin.apt:
-      deb: https://github.com/derailed/k9s/releases/download/v0.50.6/k9s_linux_amd64.deb
+      deb: https://github.com/derailed/k9s/releases/download/v0.50.7/k9s_linux_amd64.deb
       install_recommends: yes
       update_cache: no
   - name: Download Longhorn binary CLI
