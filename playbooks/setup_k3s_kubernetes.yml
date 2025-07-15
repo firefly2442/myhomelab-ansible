@@ -231,6 +231,26 @@
       # - helm repo add weaviate https://weaviate.github.io/weaviate-helm
   - name: Update Helm repos
     ansible.builtin.command: helm repo update
+  - name: Add labels for workers and non-workers
+    when: inventory_hostname in ['system76laptop']
+    ansible.builtin.shell: |
+      kubectl label node pop-os node-role.kubernetes.io/non-worker="" --overwrite
+      kubectl label node gmktec node-role.kubernetes.io/non-worker="" --overwrite
+      kubectl label node dellxps node-role.kubernetes.io/non-worker="" --overwrite
+      kubectl label node antecbackup node-role.kubernetes.io/non-worker="" --overwrite
+      kubectl label node alienware node-role.kubernetes.io/worker="" --overwrite
+      kubectl label node blueantec node-role.kubernetes.io/worker="" --overwrite
+  - name: List node labels
+    when: inventory_hostname in ['system76laptop']
+    ansible.builtin.shell: kubectl get nodes --show-labels
+  - name: Add taint for pop-os so no pods get assigned
+    when: inventory_hostname in ['system76laptop']
+    ansible.builtin.shell: kubectl taint --overwrite nodes pop-os key=NoSchedule:NoSchedule
+  - name: Add taints for worker nodes so only explicitly defined workloads get loaded
+    when: inventory_hostname in ['system76laptop']
+    ansible.builtin.shell: |
+      kubectl taint --overwrite nodes alienware node-role.kubernetes.io/worker=ephemeral:NoSchedule
+      kubectl taint --overwrite nodes blueantec node-role.kubernetes.io/worker=ephemeral:NoSchedule
   # https://docs.ansible.com/ansible/latest/collections/kubernetes/core/helm_module.html
   # some of these applications are needed to be installed here as opposed to
   # in FluxCD because the CRDs need to be created and available first
@@ -304,9 +324,6 @@
       group: root
       mode: 0755
       remote_src: true
-  - name: Add taint for pop-os so no pods get assigned
-    when: inventory_hostname in ['system76laptop']
-    ansible.builtin.shell: kubectl taint --overwrite nodes pop-os key=NoSchedule:NoSchedule
   - name: Take a backup of the sealed secrets private key, saves in home directory
     when: inventory_hostname in ['system76laptop']
     ansible.builtin.shell: kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml > sealed-secrets-key-backup.yaml

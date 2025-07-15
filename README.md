@@ -67,13 +67,13 @@ Install software specific to BlueAntec for Nvidia Docker integration
 ansible-playbook playbooks/install_blueantec_packages.yml -i inventory.yml -K -k
 ```
 
-Install k3s Kubernetes cluster
+Install k3s Kubernetes cluster, make sure all nodes are up and available
 
 ```shell
 ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --extra-vars "token=secret master=192.168.1.112 loadbalancer=192.168.1.226 dockerhubtoken=secret"
 ```
 
-| Node         | Control Plane | etcd | Worker | Longhorn | Notes                                      |
+| Node         | Control Plane | etcd | Workloads | Longhorn | Notes                                      |
 |--------------|---------------|------|--------|--------|--------------------------------------------|
 | gmktec       | ✅            | ✅   | ✅    | ✅    | Core node, part of quorum                  |
 | dellxps      | ✅            | ✅   | ✅    | ✅    | Core node, part of quorum                  |
@@ -94,7 +94,7 @@ Install applications to k3s Kubernetes cluster
 ansible-playbook playbooks/deploy_k3s_applications.yml -i inventory.yml -K -k
 ```
 
-Teardown entire k3s Kubernetes cluster
+Teardown entire k3s Kubernetes cluster, make sure all nodes are up
 
 ```shell
 ansible-playbook playbooks/teardown_k3s_kubernetes.yml -i inventory.yml -K -k
