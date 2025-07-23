@@ -14,9 +14,8 @@
         - open-iscsi
         # for Longhorn
         # this may also require some kernel adjustments
-        # this script checks to see if any requirements are missing
-        # $ curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.8.1/scripts/environment_check.sh | bash
         # sudo modprobe iscsi_tcp
+        # sudo systemctl status iscsid
         - jq
         - nfs-common
         - cryptsetup
