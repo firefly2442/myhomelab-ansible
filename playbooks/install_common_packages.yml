@@ -86,7 +86,7 @@
       mode: '0644'
       content: |
         {
-        "insecure-registries": ["192.168.1.226:5000", "http://192.168.1.226:5001"],
+        "insecure-registries": ["192.168.1.226:5000", "192.168.1.226:5001"],
         "registry-mirrors": ["http://192.168.1.226:5001"],
         "features": {
             "buildkit" : true
