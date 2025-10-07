@@ -148,30 +148,32 @@
           docker.io:
             endpoint:
               - "http://192.168.1.226:5001"
-          ghcr.io:
-            endpoint:
-              - "http://192.168.1.226:5001"
-          gcr.io:
-            endpoint:
-              - "http://192.168.1.226:5001"
-          quay.io:
-            endpoint:
-              - "http://192.168.1.226:5001"
-          lscr.io:
-            endpoint:
-              - "http://192.168.1.226:5001"
-          ecr.aws:
-            endpoint:
-              - "http://192.168.1.226:5001"
-          mcr.microsoft.com:
-            endpoint:
-              - "http://192.168.1.226:5001"
-          registry.k8s.io:
-            endpoint:
-              - "http://192.168.1.226:5001"
-          192.168.1.226:5000:
-            endpoint:
-              - "http://192.168.1.226:5000"
+          # registry:latest only supports a single upstream
+          # so each of these would need it's own deployment
+          # alternatives include solutions like Harbor, Artifactory, and Nexus
+          # or options like: https://github.com/obeone/multi-registry-cache
+          # or this: https://github.com/rpardini/docker-registry-proxy
+          # ghcr.io:
+          #   endpoint:
+          #     - "http://192.168.1.226:5001"
+          # gcr.io:
+          #   endpoint:
+          #     - "http://192.168.1.226:5001"
+          # quay.io:
+          #   endpoint:
+          #     - "http://192.168.1.226:5001"
+          # lscr.io:
+          #   endpoint:
+          #     - "http://192.168.1.226:5001"
+          # ecr.aws:
+          #   endpoint:
+          #     - "http://192.168.1.226:5001"
+          # mcr.microsoft.com:
+          #   endpoint:
+          #     - "http://192.168.1.226:5001"
+          # registry.k8s.io:
+          #   endpoint:
+          #     - "http://192.168.1.226:5001"
         configs:
           "192.168.1.226:5000":
             tls:
@@ -179,10 +181,6 @@
           "192.168.1.226:5001":
             tls:
               insecure_skip_verify: true
-          "registry-1.docker.io":
-            auth:
-              username: pcarlso
-              password: {{ dockerhubtoken }}
   # - name: make sure k3s has restarted to take advantage of settings
   #   become: true
   #   service:
