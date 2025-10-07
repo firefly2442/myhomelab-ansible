@@ -26,7 +26,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/helm/helm/releases
-      src: https://get.helm.sh/helm-v3.18.4-linux-amd64.tar.gz
+      src: https://get.helm.sh/helm-v3.19.0-linux-amd64.tar.gz
       dest: /usr/local/bin/
       extra_opts: "--strip-components=1" # skip first folder
       owner: root
@@ -37,7 +37,7 @@
     become: true
     ansible.builtin.get_url:
       # https://github.com/argoproj/argo-cd/releases/
-      url: https://github.com/argoproj/argo-cd/releases/download/v3.0.6/argocd-linux-amd64
+      url: https://github.com/argoproj/argo-cd/releases/download/v3.1.8/argocd-linux-amd64
       dest: /usr/local/bin/argocd
       owner: root
       group: root
@@ -46,7 +46,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/FairwindsOps/nova/releases
-      src: https://github.com/FairwindsOps/nova/releases/download/v3.11.3/nova_3.11.3_linux_amd64.tar.gz
+      src: https://github.com/FairwindsOps/nova/releases/download/v3.11.8/nova_3.11.8_linux_amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
@@ -69,6 +69,7 @@
   # https://github.com/k3s-io/k3s/releases
   # we disable local-storage so we can use longhorn later
   # https://docs.k3s.io/cli/server
+  # be careful upgrading k3s as Rancher has very specific requirements and is often behind
   - name: Install k3s on initial etcd/control-plane/worker node (cluster-init)
     when: inventory_hostname in ['gmktec']
     become: true
@@ -76,7 +77,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.2+k3s1 \
+      INSTALL_K3S_VERSION=v1.33.4+k3s1 \
       sh -s - server \
         --cluster-init \
         --tls-san {{ loadbalancer | quote }} \
@@ -89,7 +90,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.2+k3s1 \
+      INSTALL_K3S_VERSION=v1.33.4+k3s1 \
       sh -s - server \
         --server https://{{ master | quote }}:6443 \
         --tls-san {{ loadbalancer | quote }} \
@@ -102,7 +103,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.2+k3s1 \
+      INSTALL_K3S_VERSION=v1.33.4+k3s1 \
       sh -s - server \
         --server https://{{ master | quote }}:6443 \
         --tls-san {{ loadbalancer | quote }} \
@@ -117,7 +118,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.2+k3s1 \
+      INSTALL_K3S_VERSION=v1.33.4+k3s1 \
       sh -s - agent \
         --server https://{{ master | quote }}:6443
   - name: Set load balancer IP for workers only in /etc/rancher/k3s/k3s.yaml
@@ -298,14 +299,14 @@
     # https://github.com/derailed/k9s/releases
     become: true
     ansible.builtin.apt:
-      deb: https://github.com/derailed/k9s/releases/download/v0.50.9/k9s_linux_amd64.deb
+      deb: https://github.com/derailed/k9s/releases/download/v0.50.14/k9s_linux_amd64.deb
       install_recommends: yes
       update_cache: no
   - name: Download Longhorn binary CLI
     become: true
     ansible.builtin.get_url:
       # https://github.com/longhorn/cli/releases
-      url: https://github.com/longhorn/cli/releases/download/v1.9.0/longhornctl-linux-amd64
+      url: https://github.com/longhorn/cli/releases/download/v1.10.0/longhornctl-linux-amd64
       dest: /usr/local/bin/longhornctl
       owner: root
       group: root
@@ -315,7 +316,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/bitnami-labs/sealed-secrets/releases
-      src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.30.0/kubeseal-0.30.0-linux-amd64.tar.gz
+      src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/kubeseal-0.32.2-linux-amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
