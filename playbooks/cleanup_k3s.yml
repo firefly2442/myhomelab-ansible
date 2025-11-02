@@ -1,0 +1,13 @@
+---
+- hosts:
+  - gmktec
+  - alienware
+  - blueantec
+  - system76laptop
+  - antecbackup
+  - dellxps
+  tasks:
+  - name: Cleanup old containerd images in k3s (this can take awhile)
+    ansible.builtin.shell: k3s crictl rmi --prune
+    become: true
+  

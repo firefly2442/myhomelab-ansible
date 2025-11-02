@@ -94,6 +94,12 @@ Install applications to k3s Kubernetes cluster
 ansible-playbook playbooks/deploy_k3s_applications.yml -i inventory.yml -K -k
 ```
 
+Cleanup any stale and outdated images in containerd
+
+```shell
+ansible-playbook playbooks/cleanup_k3s.yml -i inventory.yml -K -k
+```
+
 Teardown entire k3s Kubernetes cluster, make sure all nodes are up
 
 ```shell
