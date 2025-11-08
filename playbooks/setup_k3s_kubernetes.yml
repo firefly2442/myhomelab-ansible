@@ -37,7 +37,7 @@
     become: true
     ansible.builtin.get_url:
       # https://github.com/argoproj/argo-cd/releases/
-      url: https://github.com/argoproj/argo-cd/releases/download/v3.1.8/argocd-linux-amd64
+      url: https://github.com/argoproj/argo-cd/releases/download/v3.2.0/argocd-linux-amd64
       dest: /usr/local/bin/argocd
       owner: root
       group: root
@@ -46,7 +46,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/FairwindsOps/nova/releases
-      src: https://github.com/FairwindsOps/nova/releases/download/v3.11.8/nova_3.11.8_linux_amd64.tar.gz
+      src: https://github.com/FairwindsOps/nova/releases/download/v3.11.9/nova_3.11.9_linux_amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
@@ -77,7 +77,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.4+k3s1 \
+      INSTALL_K3S_VERSION=v1.34.1+k3s1 \
       sh -s - server \
         --cluster-init \
         --tls-san {{ loadbalancer | quote }} \
@@ -90,7 +90,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.4+k3s1 \
+      INSTALL_K3S_VERSION=v1.34.1+k3s1 \
       sh -s - server \
         --server https://{{ master | quote }}:6443 \
         --tls-san {{ loadbalancer | quote }} \
@@ -103,7 +103,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.4+k3s1 \
+      INSTALL_K3S_VERSION=v1.34.1+k3s1 \
       sh -s - server \
         --server https://{{ master | quote }}:6443 \
         --tls-san {{ loadbalancer | quote }} \
@@ -118,7 +118,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.33.4+k3s1 \
+      INSTALL_K3S_VERSION=v1.34.1+k3s1 \
       sh -s - agent \
         --server https://{{ master | quote }}:6443
   - name: Set load balancer IP for workers only in /etc/rancher/k3s/k3s.yaml
@@ -299,7 +299,7 @@
     # https://github.com/derailed/k9s/releases
     become: true
     ansible.builtin.apt:
-      deb: https://github.com/derailed/k9s/releases/download/v0.50.15/k9s_linux_amd64.deb
+      deb: https://github.com/derailed/k9s/releases/download/v0.50.16/k9s_linux_amd64.deb
       install_recommends: yes
       update_cache: no
   - name: Download Longhorn binary CLI
@@ -316,7 +316,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/bitnami-labs/sealed-secrets/releases
-      src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.32.2/kubeseal-0.32.2-linux-amd64.tar.gz
+      src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.33.1/kubeseal-0.33.1-linux-amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
