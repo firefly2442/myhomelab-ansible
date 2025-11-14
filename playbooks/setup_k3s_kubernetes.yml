@@ -67,7 +67,6 @@
       url: https://get.k3s.io
       dest: /tmp/k3s.sh
   # https://github.com/k3s-io/k3s/releases
-  # we disable local-storage so we can use longhorn later
   # https://docs.k3s.io/cli/server
   # be careful upgrading k3s as Rancher has very specific requirements and is often behind
   - name: Install k3s on initial etcd/control-plane/worker node (cluster-init)
@@ -82,7 +81,6 @@
         --cluster-init \
         --tls-san {{ loadbalancer | quote }} \
         --disable servicelb \
-        --disable local-storage
   - name: Install k3s on etcd/control-plane/worker nodes
     when: inventory_hostname in ['dellxps', 'antecbackup']
     become: true
@@ -95,7 +93,6 @@
         --server https://{{ master | quote }}:6443 \
         --tls-san {{ loadbalancer | quote }} \
         --disable servicelb \
-        --disable local-storage
   - name: Install k3s on control-plane-only node (no etcd, no workloads)
     when: inventory_hostname in ['system76laptop']
     become: true
@@ -109,7 +106,6 @@
         --tls-san {{ loadbalancer | quote }} \
         --disable servicelb \
         --disable-etcd \
-        --disable local-storage \
         --node-taint CriticalAddonsOnly=true:NoExecute
   - name: Install k3s on worker-only nodes
     when: inventory_hostname in ['alienware', 'blueantec']
