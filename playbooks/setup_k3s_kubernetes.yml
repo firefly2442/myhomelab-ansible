@@ -202,6 +202,16 @@
   - name: Wait for cluster handshake and spinup
     ansible.builtin.pause:
       seconds: 5
+  - name: Make longhorn is the only default storage class
+    when: inventory_hostname in ['system76laptop']
+    ansible.builtin.shell: |
+      kubectl patch storageclass local-path \
+        -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"false","storageclass.beta.kubernetes.io/is-default-class":"false"}}}' \
+        --type=merge || true
+      # Optionally remove annotations entirely (some setups require this)
+      kubectl patch storageclass local-path \
+        -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class": null,"storageclass.beta.kubernetes.io/is-default-class": null}}}' \
+        --type=merge || true
   - name: Get node status
     when: inventory_hostname in ['dellxps', 'antecbackup', 'gmktec', 'system76laptop']
     ansible.builtin.command: kubectl get nodes
