@@ -1,6 +1,0 @@
-## Argo CD configuration
-## Ref: https://github.com/argoproj/argo-cd
-
-server:
-  service:
-    type: LoadBalancer

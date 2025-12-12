@@ -70,7 +70,7 @@ ansible-playbook playbooks/install_blueantec_packages.yml -i inventory.yml -K -k
 Install k3s Kubernetes cluster, make sure all nodes are up and available
 
 ```shell
-ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --extra-vars "token=secret master=192.168.1.112 loadbalancer=192.168.1.226 dockerhubtoken=secret"
+ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --extra-vars "token=secret master=192.168.1.112 loadbalancer=192.168.1.226"
 ```
 
 | Node         | Control Plane | etcd | Workloads | Longhorn | Notes                                      |
@@ -87,12 +87,6 @@ it will be `k3s-agent` for the systemd service.  The workers are also setup as l
 clients meaning they do not directly store any data.  They can mount data from other
 nodes over the network.  This way when they are shutdown, it doesn't impact having to
 rebuild and sync data across the network.
-
-Install applications to k3s Kubernetes cluster
-
-```shell
-ansible-playbook playbooks/deploy_k3s_applications.yml -i inventory.yml -K -k
-```
 
 Cleanup any stale and outdated images in containerd
 
