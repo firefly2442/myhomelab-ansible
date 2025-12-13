@@ -233,6 +233,7 @@
       # - helm repo add bitnami https://charts.bitnami.com/bitnami
       # - helm repo add aqua https://aquasecurity.github.io/helm-charts/
       # - helm repo add weaviate https://weaviate.github.io/weaviate-helm
+      - helm repo add kuberay https://ray-project.github.io/kuberay-helm/
   - name: Update Helm repos
     ansible.builtin.command: helm repo update
   - name: Add labels for workers and non-workers
@@ -275,6 +276,16 @@
       create_namespace: true
       wait: true
   - name: Install cert-manager
+    when: inventory_hostname in ['system76laptop']
+    kubernetes.core.helm:
+      release_name: kuberay-operator
+      chart_ref: kuberay/kuberay-operator
+      release_namespace: kuberay-operator
+      create_namespace: true
+      wait: true
+      values:
+        installCRDs: true
+  - name: Install kuberay-operator
     when: inventory_hostname in ['system76laptop']
     kubernetes.core.helm:
       release_name: cert-manager
