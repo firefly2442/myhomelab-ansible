@@ -1,10 +1,10 @@
 ---
 - hosts: openwrt
   tasks:
-  - name: update package listing via opkg
-    ansible.builtin.command: opkg update
-  - name: install packages via opkg
-    ansible.builtin.command: opkg install "{{ item }}"
+  - name: update package listing via apk
+    ansible.builtin.command: apk update
+  - name: install packages via apk
+    ansible.builtin.command: apk add "{{ item }}"
     loop:
       - luci-ssl
       - nano
