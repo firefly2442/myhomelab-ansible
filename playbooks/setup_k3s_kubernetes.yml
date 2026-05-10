@@ -26,7 +26,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/helm/helm/releases
-      src: https://get.helm.sh/helm-v4.1.1-linux-amd64.tar.gz
+      src: https://get.helm.sh/helm-v4.1.4-linux-amd64.tar.gz
       dest: /usr/local/bin/
       extra_opts: "--strip-components=1" # skip first folder
       owner: root
@@ -37,7 +37,7 @@
     become: true
     ansible.builtin.get_url:
       # https://github.com/argoproj/argo-cd/releases/
-      url: https://github.com/argoproj/argo-cd/releases/download/v3.3.2/argocd-linux-amd64
+      url: https://github.com/argoproj/argo-cd/releases/download/v3.4.1/argocd-linux-amd64
       dest: /usr/local/bin/argocd
       owner: root
       group: root
@@ -46,7 +46,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/FairwindsOps/nova/releases
-      src: https://github.com/FairwindsOps/nova/releases/download/v3.11.11/nova_3.11.11_linux_amd64.tar.gz
+      src: https://github.com/FairwindsOps/nova/releases/download/v3.12.0/nova_3.12.0_linux_amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
@@ -56,7 +56,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/cert-manager/cmctl/releases
-      src: https://github.com/cert-manager/cmctl/releases/download/v2.4.1/cmctl_linux_amd64.tar.gz
+      src: https://github.com/cert-manager/cmctl/releases/download/v2.5.0/cmctl_linux_amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
@@ -76,7 +76,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.35.1+k3s1 \
+      INSTALL_K3S_VERSION=v1.36.0+k3s1 \
       sh -s - server \
         --cluster-init \
         --tls-san {{ loadbalancer | quote }} \
@@ -88,7 +88,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.35.1+k3s1 \
+      INSTALL_K3S_VERSION=v1.36.0+k3s1 \
       sh -s - server \
         --server https://{{ master | quote }}:6443 \
         --tls-san {{ loadbalancer | quote }} \
@@ -100,7 +100,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.35.1+k3s1 \
+      INSTALL_K3S_VERSION=v1.36.0+k3s1 \
       sh -s - server \
         --server https://{{ master | quote }}:6443 \
         --tls-san {{ loadbalancer | quote }} \
@@ -114,7 +114,7 @@
       cat /tmp/k3s.sh | \
       K3S_KUBECONFIG_MODE="644" \
       K3S_TOKEN={{ token | quote }} \
-      INSTALL_K3S_VERSION=v1.35.1+k3s1 \
+      INSTALL_K3S_VERSION=v1.36.0+k3s1 \
       sh -s - agent \
         --server https://{{ master | quote }}:6443
   - name: Set load balancer IP for workers only in /etc/rancher/k3s/k3s.yaml
@@ -275,7 +275,7 @@
       release_namespace: kube-system
       create_namespace: true
       wait: true
-  - name: Install cert-manager
+  - name: Install kuberay-operator
     when: inventory_hostname in ['system76laptop']
     kubernetes.core.helm:
       release_name: kuberay-operator
@@ -285,16 +285,16 @@
       wait: true
       values:
         installCRDs: true
-  - name: Install kuberay-operator
-    when: inventory_hostname in ['system76laptop']
-    kubernetes.core.helm:
-      release_name: cert-manager
-      chart_ref: jetstack/cert-manager
-      release_namespace: cert-manager
-      create_namespace: true
-      wait: true
-      values:
-        installCRDs: true
+  # - name: Install cert-manager
+  #   when: inventory_hostname in ['system76laptop']
+  #   kubernetes.core.helm:
+  #     release_name: cert-manager
+  #     chart_ref: jetstack/cert-manager
+  #     release_namespace: cert-manager
+  #     create_namespace: true
+  #     wait: true
+  #     values:
+  #       installCRDs: true
   - name: Install longhorn
     when: inventory_hostname in ['system76laptop']
     kubernetes.core.helm:
@@ -323,7 +323,7 @@
     become: true
     ansible.builtin.get_url:
       # https://github.com/longhorn/cli/releases
-      url: https://github.com/longhorn/cli/releases/download/v1.11.0/longhornctl-linux-amd64
+      url: https://github.com/longhorn/cli/releases/download/v1.11.2/longhornctl-linux-amd64
       dest: /usr/local/bin/longhornctl
       owner: root
       group: root
@@ -333,7 +333,7 @@
     become: true
     ansible.builtin.unarchive:
       # https://github.com/bitnami-labs/sealed-secrets/releases
-      src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.36.0/kubeseal-0.36.0-linux-amd64.tar.gz
+      src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.36.6/kubeseal-0.36.6-linux-amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
