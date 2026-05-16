@@ -22,6 +22,47 @@
       state: latest
       install_recommends: yes
       update_cache: no
+  - name: Increase inotify limits for Kubernetes
+    when: inventory_hostname in ['gmktec', 'alienware', 'blueantec', 'antecbackup', 'dellxps']
+    become: true
+    ansible.posix.sysctl:
+      name: "{{ item.name }}"
+      value: "{{ item.value }}"
+      state: present
+      reload: yes
+    loop:
+      - { name: fs.inotify.max_user_watches, value: 524288 }
+      - { name: fs.inotify.max_user_instances, value: 1024 }
+      - { name: fs.file-max, value: 2097152 }
+  - name: Increase open file limits (limits.conf)
+    when: inventory_hostname in ['gmktec', 'alienware', 'blueantec', 'antecbackup', 'dellxps']
+    become: true
+    ansible.builtin.copy:
+      dest: /etc/security/limits.d/99-nofile.conf
+      content: |
+        * soft nofile 65536
+        * hard nofile 65536
+        root soft nofile 65536
+        root hard nofile 65536
+  - name: Ensure systemd override directory exists
+    when: inventory_hostname in ['gmktec', 'alienware', 'blueantec', 'antecbackup', 'dellxps']
+    become: true
+    ansible.builtin.file:
+      path: /etc/systemd/system.conf.d
+      state: directory
+      mode: '0755'
+  - name: Set systemd default file descriptor limit
+    when: inventory_hostname in ['gmktec', 'alienware', 'blueantec', 'antecbackup', 'dellxps']
+    become: true
+    ansible.builtin.copy:
+      dest: /etc/systemd/system.conf.d/99-default-limit.conf
+      content: |
+        [Manager]
+        DefaultLimitNOFILE=65536
+      mode: '0644'
+  - name: Message about potential restart needed
+    ansible.builtin.debug:
+      msg: "If this is the first time applying file limits, restart afterwards..."
   - name: Install Helm binary
     become: true
     ansible.builtin.unarchive:
