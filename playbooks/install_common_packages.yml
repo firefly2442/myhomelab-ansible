@@ -78,17 +78,18 @@
         - containerd.io
       state: latest
       update_cache: yes
-  - name: Adjust Docker settings for registries and pull-through-cache
+  - name: Adjust Docker settings to enable buildkit
     become: true
     ansible.builtin.copy:
       dest: "/etc/docker/daemon.json"
       owner: root
       group: root
       mode: '0644'
+      # old pull-through cache layer and such
+      # "insecure-registries": ["192.168.1.226:5000", "192.168.1.226:5001"],
+      # "registry-mirrors": ["http://192.168.1.226:5001"],
       content: |
         {
-        "insecure-registries": ["192.168.1.226:5000", "192.168.1.226:5001"],
-        "registry-mirrors": ["http://192.168.1.226:5001"],
         "features": {
             "buildkit" : true
           }
