@@ -1,22 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+
+  "extends": ["config:recommended"],
+
   "regexManagers": [
     {
       "fileMatch": [".*\\.ya?ml$"],
       "matchStrings": [
-        "url:\\s*(?<depName>https://.*/(?<versioning>[^/]+)-(?<currentValue>v?\\d+(\\.\\d+)*)(\\.tar\\.gz|\\.deb)?)"
-      ],
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "semver"
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+(?:url|src):\\s*.*?v?(?<currentValue>\\d+(?:\\.\\d+)*(?:\\+k3s\\d+)?)"
+      ]
     },
     {
       "fileMatch": [".*\\.ya?ml$"],
       "matchStrings": [
-        "url:\\s*(?<depName>https://.*/(?<currentValue>v?\\d+(\\.\\d+)*)(/.*)?)"
-      ],
-      "datasourceTemplate": "github-tags",
-      "versioningTemplate": "semver"
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+INSTALL_K3S_VERSION=v(?<currentValue>[^\\s]+)"
+      ]
     }
   ]
 }
