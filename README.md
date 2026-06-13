@@ -80,7 +80,6 @@ ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --ext
 | antecbackup  | ✅            | ✅   | ✅    | ✅    | Core node, part of quorum                  |
 | system76laptop | ✅          | ❌   | ❌    | ❌   | Control-plane only (no etcd or workloads)  |
 | alienware    | ❌            | ❌   | ✅    | ❌    | Worker only                                |
-| blueantec    | ❌            | ❌   | ✅    | ❌    | Worker only                                |
 
 A `k3s` systemd service will be setup on the control-plane nodes.  On the worker only nodes,
 it will be `k3s-agent` for the systemd service.  The workers are also setup as longhorn

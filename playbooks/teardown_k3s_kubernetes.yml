@@ -2,7 +2,6 @@
 - hosts:
   - gmktec
   - alienware
-  - blueantec
   - system76laptop
   - antecbackup
   - dellxps
