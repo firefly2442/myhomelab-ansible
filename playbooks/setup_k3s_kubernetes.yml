@@ -67,7 +67,7 @@
     ansible.builtin.unarchive:
       # https://github.com/helm/helm/releases
       # renovate: datasource=github-releases depName=helm/helm
-      src: https://get.helm.sh/helm-v4.2.1-linux-amd64.tar.gz
+      src: https://get.helm.sh/helm-v4.2.2-linux-amd64.tar.gz
       dest: /usr/local/bin/
       extra_opts: "--strip-components=1" # skip first folder
       owner: root
