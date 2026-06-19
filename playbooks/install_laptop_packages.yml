@@ -86,3 +86,49 @@
       state: latest
       install_recommends: yes
       update_cache: yes
+
+  - name: Ensure required Twingate dependency packages are installed
+    become: true
+    ansible.builtin.apt:
+      name:
+        - curl
+        - gpg
+        - ca-certificates
+      state: present
+      update_cache: true
+
+  - name: Download Twingate GPG key
+    become: true
+    ansible.builtin.get_url:
+      url: https://packages.twingate.com/apt/gpg.key
+      dest: /tmp/twingate.gpg.key
+      mode: "0644"
+
+  - name: Convert Twingate GPG key to keyring format
+    become: true
+    ansible.builtin.command:
+      cmd: >
+        gpg --dearmor
+        -o /usr/share/keyrings/twingate-client-keyring.gpg
+        /tmp/twingate.gpg.key
+      creates: /usr/share/keyrings/twingate-client-keyring.gpg
+
+  - name: Add Twingate apt repository
+    become: true
+    ansible.builtin.apt_repository:
+      repo: >-
+        deb [signed-by=/usr/share/keyrings/twingate-client-keyring.gpg]
+        https://packages.twingate.com/apt/ * *
+      filename: twingate
+      state: present
+
+  - name: Install Twingate
+    become: true
+    ansible.builtin.apt:
+      name: twingate
+      state: present
+      update_cache: true
+
+  - name: Configure Twingate Message
+    debug:
+      msg: "Now run: sudo twingate setup"
