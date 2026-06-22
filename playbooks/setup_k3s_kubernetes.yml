@@ -271,18 +271,18 @@
   - name: Add Helm repos
     ansible.builtin.command: "{{ item }}"
     with_items:
-      - helm repo add longhorn https://charts.longhorn.io
-      - helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets/
-      - helm repo add metallb https://metallb.github.io/metallb
-      # - helm repo add milvus https://milvus-io.github.io/milvus-helm/
-      # - helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-      - helm repo add jetstack https://charts.jetstack.io
-      # - helm repo add argo https://argoproj.github.io/argo-helm
-      # - helm repo add authelia https://charts.authelia.com
-      # - helm repo add bitnami https://charts.bitnami.com/bitnami
-      # - helm repo add aqua https://aquasecurity.github.io/helm-charts/
-      # - helm repo add weaviate https://weaviate.github.io/weaviate-helm
-      - helm repo add kuberay https://ray-project.github.io/kuberay-helm/
+      - helm repo add longhorn https://charts.longhorn.io --force-update
+      - helm repo add sealed-secrets https://bitnami.github.io/sealed-secrets/ --force-update
+      - helm repo add metallb https://metallb.github.io/metallb --force-update
+      # - helm repo add milvus https://milvus-io.github.io/milvus-helm/ --force-update
+      # - helm repo add rancher-stable https://releases.rancher.com/server-charts/stable --force-update
+      - helm repo add jetstack https://charts.jetstack.io --force-update
+      # - helm repo add argo https://argoproj.github.io/argo-helm --force-update
+      # - helm repo add authelia https://charts.authelia.com --force-update
+      # - helm repo add bitnami https://charts.bitnami.com/bitnami --force-update
+      # - helm repo add aqua https://aquasecurity.github.io/helm-charts/ --force-update
+      # - helm repo add weaviate https://weaviate.github.io/weaviate-helm --force-update
+      - helm repo add kuberay https://ray-project.github.io/kuberay-helm/ --force-update
   - name: Update Helm repos
     ansible.builtin.command: helm repo update
   - name: Add labels for workers and non-workers
@@ -381,9 +381,9 @@
   - name: Download kubeseal binary CLI
     become: true
     ansible.builtin.unarchive:
-      # https://github.com/bitnami-labs/sealed-secrets/releases
-      # renovate: datasource=github-releases depName=bitnami-labs/sealed-secrets
-      src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.38.1/kubeseal-0.37.0-linux-amd64.tar.gz
+      # https://github.com/bitnami/sealed-secrets/releases
+      # renovate: datasource=github-releases depName=bitnami/sealed-secrets
+      src: https://github.com/bitnami/sealed-secrets/releases/download/v0.38.1/kubeseal-0.38.1-linux-amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
