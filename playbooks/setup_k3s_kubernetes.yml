@@ -383,7 +383,7 @@
     ansible.builtin.unarchive:
       # https://github.com/bitnami/sealed-secrets/releases
       # renovate: datasource=github-releases depName=bitnami/sealed-secrets
-      src: https://github.com/bitnami/sealed-secrets/releases/download/v0.38.2/kubeseal-0.38.1-linux-amd64.tar.gz
+      src: https://github.com/bitnami/sealed-secrets/releases/download/v0.38.3/kubeseal-0.38.1-linux-amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
