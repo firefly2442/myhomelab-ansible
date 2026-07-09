@@ -79,7 +79,7 @@
     ansible.builtin.get_url:
       # https://github.com/argoproj/argo-cd/releases/
       # renovate: datasource=github-releases depName=argoproj/argo-cd
-      url: https://github.com/argoproj/argo-cd/releases/download/v3.4.4/argocd-linux-amd64
+      url: https://github.com/argoproj/argo-cd/releases/download/v3.4.5/argocd-linux-amd64
       dest: /usr/local/bin/argocd
       owner: root
       group: root
