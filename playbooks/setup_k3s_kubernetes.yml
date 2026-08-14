@@ -372,7 +372,7 @@
     ansible.builtin.get_url:
       # https://github.com/longhorn/cli/releases
       # renovate: datasource=github-releases depName=longhorn/cli
-      url: https://github.com/longhorn/cli/releases/download/v1.12.0/longhornctl-linux-amd64
+      url: https://github.com/longhorn/cli/releases/download/v1.12.1/longhornctl-linux-amd64
       dest: /usr/local/bin/longhornctl
       owner: root
       group: root
