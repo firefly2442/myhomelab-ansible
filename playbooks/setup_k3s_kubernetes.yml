@@ -100,7 +100,7 @@
     ansible.builtin.unarchive:
       # https://github.com/cert-manager/cmctl/releases
       # renovate: datasource=github-releases depName=cert-manager/cmctl
-      src: https://github.com/cert-manager/cmctl/releases/download/v2.5.0/cmctl_linux_amd64.tar.gz
+      src: https://github.com/cert-manager/cmctl/releases/download/v2.6.1/cmctl_linux_amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
