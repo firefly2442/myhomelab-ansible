@@ -61,15 +61,23 @@
       update_cache: yes
       cache_valid_time: 3600 # only update cache if it hasn't been updated in the last hour
       install_recommends: yes
-  - name: add GPG key for docker
+  - name: create apt keyrings directory
     become: true
-    apt_key:
+    ansible.builtin.file:
+      path: /etc/apt/keyrings
+      state: directory
+      mode: '0755'
+  - name: download docker GPG key
+    become: true
+    ansible.builtin.get_url:
       url: https://download.docker.com/linux/ubuntu/gpg
-      state: present
+      dest: /etc/apt/keyrings/docker.asc
+      mode: '0644'
   - name: add docker repository to apt
     become: true
-    apt_repository:
-      repo: deb [arch={{ deb_architecture['stdout'] }}] https://download.docker.com/linux/ubuntu {{ ubuntu_codename }} stable
+    ansible.builtin.apt_repository:
+      repo: "deb [arch={{ deb_architecture['stdout'] }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ubuntu_codename }} stable"
+      filename: docker
       state: present
   - name: install docker via apt
     become: true
