@@ -139,6 +139,7 @@
       - { mac: '9C:8E:CD:22:DC:7A', name: 'IP4M-1051W', ip: '192.168.1.111' }
       - { mac: 'E8:9C:25:5E:25:FF', name: 'dellxps', ip: '192.168.1.114' }
       - { mac: '10:FF:E0:2B:40:10', name: 'antecbackup', ip: '192.168.1.140' }
+      - { max: '84:47:09:9c:b2:e8', name: 'evo-x2', ip: '192.168.1.120' }
   - name: manual step for cleanup of original dhcp lan entry
     debug:
       msg: "Manually edit /etc/config/dhcp and remove the top block defining - config dhcp 'lan'.  We only want to use the block we defined.  Also make sure each host only has one block defined.  If there are duplicates things will break."
