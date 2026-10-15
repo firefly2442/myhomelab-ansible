@@ -1,0 +1,12 @@
+---
+- hosts: ubuntu
+  tasks:
+  - name: Get Ethernet link speed for default interface
+    ansible.builtin.slurp:
+      src: "/sys/class/net/{{ ansible_default_ipv4.interface }}/speed"
+    register: interface_speed_raw
+    ignore_errors: true
+  - name: Display link speed in Mbps
+    ansible.builtin.debug:
+      msg: "Interface {{ ansible_default_ipv4.interface }} speed is {{ interface_speed_raw['content'] | b64decode | trim }} Mbps"
+    when: interface_speed_raw is succeeded
