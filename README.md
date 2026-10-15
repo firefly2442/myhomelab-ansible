@@ -67,6 +67,12 @@ Install software specific to BlueAntec for Nvidia Docker integration
 ansible-playbook playbooks/install_blueantec_packages.yml -i inventory.yml -K -k
 ```
 
+Install software specific to the Gmktec Evo X-2 Strix Halo with unified memory
+
+```shell
+ansible-playbook playbooks/setup_evo-x2_playbook.yml -i inventory.yml -K -k
+```
+
 Install k3s Kubernetes cluster, make sure all nodes are up and available
 
 ```shell

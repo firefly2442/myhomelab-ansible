@@ -1,0 +1,26 @@
+---
+- hosts: evo-x2
+  tasks:
+  - name: Get DEB architecture
+    ansible.builtin.shell: dpkg --print-architecture
+    register: deb_architecture # arm64 or amd64
+  - name: DEB architecture
+    debug:
+      msg: "deb_architecture['stdout']: {{ deb_architecture['stdout'] }}"
+  - name: install AMD Strix Halo packages
+    become: true
+    # https://docs.ansible.com/ansible/2.9/modules/apt_module.html#apt-module
+    apt:
+      name:
+        - amd-smi
+        - rocm-smi
+      state: latest
+      update_cache: yes
+      cache_valid_time: 3600 # only update cache if it hasn't been updated in the last hour
+      install_recommends: yes
+  # https://github.com/Umio-Yasuno/amdgpu_top/releases
+  - name: install amdgpu_top
+    become: true
+    apt:
+      deb: https://github.com/Umio-Yasuno/amdgpu_top/releases/download/v0.11.5/amdgpu-top_0.11.5-1_amd64.deb
+    when: deb_architecture['stdout'] == "arm64"
