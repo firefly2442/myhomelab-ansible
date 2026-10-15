@@ -23,4 +23,3 @@
     become: true
     apt:
       deb: https://github.com/Umio-Yasuno/amdgpu_top/releases/download/v0.11.5/amdgpu-top_0.11.5-1_amd64.deb
-    when: deb_architecture['stdout'] == "arm64"
