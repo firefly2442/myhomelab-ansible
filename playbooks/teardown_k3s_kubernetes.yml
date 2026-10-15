@@ -5,6 +5,7 @@
   - system76laptop
   - antecbackup
   - dellxps
+  - evo-x2
   tasks:
   - name: Check if uninstall script exists
     ansible.builtin.stat:

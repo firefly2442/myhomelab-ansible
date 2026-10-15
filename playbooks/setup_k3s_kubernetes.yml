@@ -5,6 +5,7 @@
   - system76laptop
   - antecbackup
   - dellxps
+  - evo-x2
   tasks:
   - name: Install required packages (needed for longhorn and other tooling)
     become: true
@@ -22,7 +23,7 @@
       install_recommends: yes
       update_cache: no
   - name: Increase inotify limits for Kubernetes
-    when: inventory_hostname in ['gmktec', 'alienware', 'antecbackup', 'dellxps']
+    when: inventory_hostname in ['gmktec', 'alienware', 'antecbackup', 'dellxps', 'evo-x2']
     become: true
     ansible.posix.sysctl:
       name: "{{ item.name }}"
@@ -34,7 +35,7 @@
       - { name: fs.inotify.max_user_instances, value: 1024 }
       - { name: fs.file-max, value: 2097152 }
   - name: Increase open file limits (limits.conf)
-    when: inventory_hostname in ['gmktec', 'alienware', 'antecbackup', 'dellxps']
+    when: inventory_hostname in ['gmktec', 'alienware', 'antecbackup', 'dellxps', 'evo-x2']
     become: true
     ansible.builtin.copy:
       dest: /etc/security/limits.d/99-nofile.conf
@@ -44,14 +45,14 @@
         root soft nofile 65536
         root hard nofile 65536
   - name: Ensure systemd override directory exists
-    when: inventory_hostname in ['gmktec', 'alienware', 'antecbackup', 'dellxps']
+    when: inventory_hostname in ['gmktec', 'alienware', 'antecbackup', 'dellxps', 'evo-x2']
     become: true
     ansible.builtin.file:
       path: /etc/systemd/system.conf.d
       state: directory
       mode: '0755'
   - name: Set systemd default file descriptor limit
-    when: inventory_hostname in ['gmktec', 'alienware', 'antecbackup', 'dellxps']
+    when: inventory_hostname in ['gmktec', 'alienware', 'antecbackup', 'dellxps', 'evo-x2']
     become: true
     ansible.builtin.copy:
       dest: /etc/systemd/system.conf.d/99-default-limit.conf
@@ -89,7 +90,7 @@
     ansible.builtin.unarchive:
       # https://github.com/FairwindsOps/nova/releases
       # renovate: datasource=github-releases depName=FairwindsOps/nova
-      src: https://github.com/FairwindsOps/nova/releases/download/v3.12.2/nova_3.12.0_linux_amd64.tar.gz
+      src: https://github.com/FairwindsOps/nova/releases/download/v3.12.2/nova_3.12.2_linux_amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root
@@ -155,7 +156,7 @@
         --disable-etcd \
         --node-taint CriticalAddonsOnly=true:NoExecute
   - name: Install k3s on worker-only nodes
-    when: inventory_hostname in ['alienware']
+    when: inventory_hostname in ['alienware', 'evo-x2']
     become: true
     # renovate: datasource=github-releases depName=k3s-io/k3s
     ansible.builtin.shell: |
@@ -293,6 +294,7 @@
       kubectl label node dellxps node-role.kubernetes.io/non-worker="" --overwrite
       kubectl label node antecbackup node-role.kubernetes.io/non-worker="" --overwrite
       kubectl label node alienware node-role.kubernetes.io/worker="" --overwrite
+      kubectl label node evo-x2 node-role.kubernetes.io/worker="" --overwrite
   - name: List node labels
     when: inventory_hostname in ['system76laptop']
     ansible.builtin.shell: kubectl get nodes --show-labels
@@ -303,6 +305,7 @@
     when: inventory_hostname in ['system76laptop']
     ansible.builtin.shell: |
       kubectl taint --overwrite nodes alienware node-role.kubernetes.io/worker=ephemeral:NoSchedule
+      kubectl taint --overwrite nodes evo-x2 node-role.kubernetes.io/worker=ephemeral:NoSchedule
   # https://docs.ansible.com/ansible/latest/collections/kubernetes/core/helm_module.html
   # some of these applications are needed to be installed here as opposed to
   # in FluxCD because the CRDs need to be created and available first
@@ -383,7 +386,7 @@
     ansible.builtin.unarchive:
       # https://github.com/bitnami/sealed-secrets/releases
       # renovate: datasource=github-releases depName=bitnami/sealed-secrets
-      src: https://github.com/bitnami/sealed-secrets/releases/download/v0.40.0/kubeseal-0.39.1-linux-amd64.tar.gz
+      src: https://github.com/bitnami/sealed-secrets/releases/download/v0.40.0/kubeseal-0.40.0-linux-amd64.tar.gz
       dest: /usr/local/bin/
       owner: root
       group: root

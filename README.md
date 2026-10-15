@@ -73,6 +73,12 @@ Install software specific to the Gmktec Evo X-2 Strix Halo with unified memory
 ansible-playbook playbooks/setup_evo-x2_playbook.yml -i inventory.yml -K -k
 ```
 
+Show system hardware details and other information
+
+```shell
+ansible-playbook playbooks/system_details_playbook.yml -i inventory.yml -K -k
+```
+
 Install k3s Kubernetes cluster, make sure all nodes are up and available
 
 ```shell
@@ -86,6 +92,7 @@ ansible-playbook playbooks/setup_k3s_kubernetes.yml -i inventory.yml -K -k --ext
 | antecbackup  | ✅            | ✅   | ✅    | ✅    | Core node, part of quorum                  |
 | system76laptop | ✅          | ❌   | ❌    | ❌   | Control-plane only (no etcd or workloads)  |
 | alienware    | ❌            | ❌   | ✅    | ❌    | Worker only                                |
+| evo-x2    | ❌            | ❌   | ✅    | ❌    | Worker only                                |
 
 A `k3s` systemd service will be setup on the control-plane nodes.  On the worker only nodes,
 it will be `k3s-agent` for the systemd service.  The workers are also setup as longhorn
