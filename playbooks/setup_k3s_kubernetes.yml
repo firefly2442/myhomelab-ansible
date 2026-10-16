@@ -395,3 +395,13 @@
   - name: Take a backup of the sealed secrets private key, saves in home directory
     when: inventory_hostname in ['system76laptop']
     ansible.builtin.shell: kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml > sealed-secrets-key-backup.yaml
+  - name: Download llmkube
+    # https://llmkube.com/docs/getting-started
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/defilantech/llmkube/main/install.sh
+      dest: /tmp/install-llmkube.sh
+      mode: 0755
+  - name: Install llmkube CLI
+    become: true
+    ansible.builtin.shell: bash /tmp/install-llmkube.sh
+  
