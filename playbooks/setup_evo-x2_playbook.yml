@@ -1,6 +1,35 @@
 ---
 - hosts: evo-x2
   tasks:
+  # Helpful websites and information:
+  # https://www.youtube.com/watch?v=wCBLMXgk3No
+  # https://strix-halo-toolboxes.com/#config
+  # https://strixhalo.wiki/
+  # https://www.jeffgeerling.com/blog/2025/increasing-vram-allocation-on-amd-ai-apus-under-linux/
+  # https://blog.linux-ng.de/2025/07/13/getting-information-about-amd-apus/
+  # 
+  # Prerequisite tasks and setup:
+  # 
+  # 1) Go into the BIOS and allocate the minimum amount of memory to the GPU
+  # we're going to be using Linux to make almost all of it available for models
+  # 2) Add the following settings to GRUB commandline default line
+  # the default is GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+  # edit `/etc/default/grub` and append the following to the line
+  # amd_iommu=off amdgpu.gttsize=51200 amdgpu.vm_fragment_size=8 ttm.pages_limit=13107200 ttm.page_pool_size=13107200
+  #
+  # 51200 MiB = 50 GiB
+  # This is the maximum number of pages TTM may allocate for GPU use.
+  # 50 GiB / 4 KiB = 13107200
+  # This is the size of TTM’s page pool, a cache of pages it keeps on hand instead
+  # of returning them to the kernel when the GPU frees them. It’s a ceiling, not a reservation.
+  # 50 GiB / 4 KiB = 13107200
+  # we use 50 GiB so that we leave some headroom for the operating system
+  #
+  # then update and reboot
+  # sudo update-grub && sudo reboot
+  #
+  # the results can be seen in: `sudo amdgpu_top`
+
   - name: Get DEB architecture
     ansible.builtin.shell: dpkg --print-architecture
     register: deb_architecture # arm64 or amd64
@@ -14,6 +43,7 @@
       name:
         - amd-smi
         - rocm-smi
+        - crun
       state: latest
       update_cache: yes
       cache_valid_time: 3600 # only update cache if it hasn't been updated in the last hour
@@ -23,3 +53,6 @@
     become: true
     apt:
       deb: https://github.com/Umio-Yasuno/amdgpu_top/releases/download/v0.11.5/amdgpu-top_0.11.5-1_amd64.deb
+  - name: Give user access to groups
+    become: true
+    ansible.builtin.shell: usermod -aG render,video carlsonp
