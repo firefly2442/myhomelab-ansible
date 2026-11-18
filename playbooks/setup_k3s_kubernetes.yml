@@ -404,4 +404,32 @@
   - name: Install llmkube CLI
     become: true
     ansible.builtin.shell: bash /tmp/install-llmkube.sh
-  
+  - name: Ensure k3s config drop-in directory exists
+    become: true
+    when: inventory_hostname in ['dellxps']
+    ansible.builtin.file:
+      path: /etc/rancher/k3s/config.yaml.d
+      state: directory
+      owner: root
+      group: root
+      mode: "0755"
+  - name: Set kubelet max-pods on dellxps machine since it is old
+    become: true
+    when: inventory_hostname in ['dellxps']
+    ansible.builtin.copy:
+      dest: /etc/rancher/k3s/config.yaml.d/10-max-pods.yaml
+      owner: root
+      group: root
+      mode: "0600"
+      # only run X number of pods on this machine
+      content: |
+        kubelet-arg+:
+          - "max-pods=15"
+    notify: Restart k3s
+  - name: Restart k3s
+    become: true
+    when: inventory_hostname in ['dellxps']
+    service:
+      name: k3s
+      state: restarted
+      enabled: yes
